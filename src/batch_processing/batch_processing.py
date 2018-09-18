@@ -3,7 +3,8 @@ sys.path.append("./helpers/")
 import json
 import helper
 import postgre
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
+from pyspark.sql import SparkSession
 
 class BatchProcessor:
 	"""
@@ -18,8 +19,10 @@ class BatchProcessor:
 		"""
 		self.s3_config   = helper.parse_config(s3_configfile)
 		self.psql_config = helper.parse_config(psql_configfile)
-		self.sc = SparkContext()
+		self.conf = SparkConf()
+		self.sc = SparkContext(conf=self.conf)
 		self.sc.setLogLevel("ERROR")
+		self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
 
 
 	def read_from_s3(self):
@@ -29,9 +32,9 @@ class BatchProcessor:
 		yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET1"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE1"])
 		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET2"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE2"])
 		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET3"], self.s3_config["FOLDER3"], self.s3_config["RAW_DATA_FILE3"])
-		self.df_yelp_business = self.sc.read.json(yelp_business_filename)
-		self.df_yelp_rating = self.sc.read.json(yelp_rating_filename)
-		self.df_sanitory_inspection = self.sc.read.csv(sanitory_inspection_filename)
+		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
+		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
+		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename)
 
 
 	def run(self):
