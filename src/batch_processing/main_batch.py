@@ -1,5 +1,5 @@
 import sys
-from batch_prcoessing import BatchProcessor
+from batch_processing import BatchProcessor
 
 ### main method that executes batch job ###
 
