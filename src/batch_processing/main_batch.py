@@ -10,6 +10,5 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     s3_configfile, psql_configfile = sys.argv[1:3]
-
     transformer = BatchProcessor(s3_configfile, psql_configfile)
     transformer.run()
