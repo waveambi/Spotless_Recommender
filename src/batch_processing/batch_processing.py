@@ -37,13 +37,29 @@ class BatchProcessor:
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename)
 
 
+	def spark_transform(self):
+		"""
+		transforms Spark DataFrame with raw data into cleaned data;
+		adds information
+		"""
+		self.data = self.df_yelp_rating
+
+
+	def save_to_postgresql(self):
+		"""
+		save batch processing results into PostgreSQL database and adds necessary index
+		"""
+		config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
+		config["dbtable"] = self.psql_config["dbtable_batch"]
+		postgre.save_to_postgresql(self.df, self.spark, config, self.psql_config["mode_batch"])
+
 	def run(self):
 		"""
 		executes the read from S3, transform by Spark and write to PostgreSQL database sequence
 		"""
 		self.read_from_s3()
-		#self.spark_transform()
-		#self.save_to_postgresql()
+		self.spark_transform()
+		self.save_to_postgresql()
 		
 
 

@@ -3,6 +3,7 @@ import json
 import subprocess
 from datetime import datetime
 
+
 def parse_config(configfile):
     """
     reads configs saved as json record in configuration file and returns them
@@ -29,6 +30,8 @@ def replace_envvars_with_vals(dic):
                 command = "echo {}".format(val)
                 dic[el] = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).stdout.read().strip()
     return dic
+
+
 
 
 
