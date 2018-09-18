@@ -33,15 +33,6 @@ class BatchProcessor:
 		self.df_yelp_rating = self.sc.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.sc.read.csv(sanitory_inspection_filename)
 
-    '''
-	def save_to_postgresql(self):
-		"""
-		save batch processing results into PostgreSQL database and adds necessary index
-		"""
-		config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
-		config["dbtable"] = self.psql_config["dbtable_batch"]
-		postgre.save_to_postgresql(self.df, pyspark.sql.SQLContext(self.sc), configs, self.psql_config["mode_batch"])
-    '''
 
 	def run(self):
 		"""
@@ -52,18 +43,5 @@ class BatchProcessor:
 		#self.save_to_postgresql()
 		
 
-
-"""
-df_business = sc.read.json("s3a://insightdatascience/Yelp/yelp_academic_dataset_business.json")
-df_business_vegas = df_business.filter(df_business.city == "Las Vegas").select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude", "state", "stars", "review_count") #28865 business in total
-df_review = sc.read.json("s3a://insightdatascience/Yelp/yelp_academic_dataset_review.json").select("review_id", "user_id", "business_id", "stars", "text") #5,996,996 in total records
-df_sanitory = sc.read.csv("s3a://insightdatascience/Las_Vegas_Restaurant_Inspections.csv", header=True) #21762 unique, 162977 in total restaurant check
-
-df_restaurant = df_business_vegas.join(df_sanitory, (df_business_vegas.address == df_sanitory.Address) & (df_business_vegas.name == df_sanitory.Restaurant_Name), 'inner') #2564 joined result
-df = df_restaurant.join(df_review, "business_id", 'inner')
-df.cache()
-df.groupby('user_id').agg({'business_id':'count'}).withColumnRenamed("count(business_id)", "restaurant_count")
-df.groupby('business_id').agg({'user_id':'count'}).show()
-"""
 
 
