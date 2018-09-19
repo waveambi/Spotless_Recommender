@@ -4,10 +4,10 @@ S3CONFIGFILE=$PWD/config/s3bucket.config
 SCHEMAFILE=$PWD/config/schema_for_streaming.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 
-TOPIC=`grep TOPIC $KAFKACONFIGFILE | sed s/"TOPIC"//g | sed s/[:," "\"]//g`
-NUM_PARTITIONS=`grep PARTITIONS $KAFKACONFIGFILE | sed s/[^[:digit:]]//g`
-REPL_FACTOR=`grep REPL_FACTOR $KAFKACONFIGFILE | sed s/[^[:digit:]]//g`
-RETENTION=`grep RETENTION $KAFKACONFIGFILE | sed s/[^[:digit:]]//g`
+TOPIC= "mytopic"
+NUM_PARTITIONS= 3
+REPL_FACTOR= 2
+RETENTION=3600000
 ZOOKEEPER_IP=`grep ZOOKEEPER $KAFKACONFIGFILE | sed s/".*_IP"//g | sed s/[" "\"]//g | sed s/^.//g | sed s/.$//g`
 BROKERS_IP=`grep BROKERS $KAFKACONFIGFILE | sed s/".*_IP"//g | sed s/[" "\"]//g | sed s/^.//g | sed s/.$//g`
 convert () {

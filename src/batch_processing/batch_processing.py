@@ -35,6 +35,7 @@ class BatchProcessor:
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
 		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
+		self.df_sanitory_inspection = self.df_sanitory_inspection.groupby('name').agg({'Current_Demerits':'mean'})
 
 
 	def spark_transform(self):
