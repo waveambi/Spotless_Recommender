@@ -1,15 +1,27 @@
 import psycopg2
 
-def save_to_postgresql(sql_data, config, savemode):
+def save_to_postgresql(sql_data, config):
     """
     saves Spark DataFrame to PostgreSQL database with given configurations
     :type sql_data  : Spark DataFrame   DataFrame to save
     :type config    : dict              dictionary with PostgreSQL configurations
     :type savemode  : str               "overwrite", "append"
     """
-    options = "".join([".options(%s=config[\"%s\"])" % (opt, opt) for opt in config.keys()])
-    command = "sql_data.write.format(\"jdbc\").mode(\"%s\")%s.save()" % (savemode, options)
-    eval(command)
+    try:
+        conn = psycopg2.connect(**config)
+    except:
+        error = "Unable to connect to the database."
+    conn.autocommit = True
+    cur = conn.cursor()
+    try:
+        cur.execute = """create table DF if not exists
+        (id varchar(20));"""
+
+    except:
+        error = "Can't get data from database!"
+    conn.close()
+    return eval(error)
+
 
 
 

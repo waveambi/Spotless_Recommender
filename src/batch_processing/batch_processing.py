@@ -29,11 +29,11 @@ class BatchProcessor:
 		"""
 		reads files from s3 bucket defined by s3_configfile and creates Spark DataFrame
 		"""
-		yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET1"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE1"])
-		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET2"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE2"])
+		#yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET1"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE1"])
+		#yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET2"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE2"])
 		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET3"], self.s3_config["FOLDER3"], self.s3_config["RAW_DATA_FILE3"])
-		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
-		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
+		#self.df_yelp_business = self.spark.read.json(yelp_business_filename)
+		#self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename)
 
 
@@ -42,7 +42,7 @@ class BatchProcessor:
 		transforms Spark DataFrame with raw data into cleaned data;
 		adds information
 		"""
-		self.data = self.df_yelp_rating
+		self.df = self.df_sanitory_inspection
 
 
 	def save_to_postgresql(self):
@@ -50,8 +50,8 @@ class BatchProcessor:
 		save batch processing results into PostgreSQL database and adds necessary index
 		"""
 		config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
-		config["dbtable"] = self.psql_config["dbtable_batch"]
-		postgre.save_to_postgresql(self.df, self.spark, config, self.psql_config["mode_batch"])
+		#config["dbtable"] = self.psql_config["dbtable_batch"]
+		postgre.save_to_postgresql(self.df, config)
 
 	def run(self):
 		"""
