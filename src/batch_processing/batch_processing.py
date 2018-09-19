@@ -25,6 +25,7 @@ class BatchProcessor:
 		self.sc = SparkContext(conf=self.conf)
 		self.sc.setLogLevel("ERROR")
 		self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
+		self.spark("set spark.sql.caseSensitive=true")
 
 
 	def read_from_s3(self):
