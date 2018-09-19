@@ -5,6 +5,8 @@ import helper
 import postgre
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import udf
+from pyspark.sql.types import IntegerType
 
 class BatchProcessor:
 	"""
@@ -42,9 +44,24 @@ class BatchProcessor:
 		transforms Spark DataFrame with raw data into cleaned data;
 		adds information
 		"""
+		self.df_yelp_rating = self.df_yelp_rating.select("review_id", "user_id", "business_id", "stars", "text").withColumnRenamed("stars", "ratings")
 		self.df_yelp_business = self.df_yelp_business.filter(self.df_yelp_business.city == "Las Vegas").select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude", "state", "stars", "review_count")
 		self.df = self.df_yelp_business.join(self.df_sanitory_inspection, (self.df_yelp_business.address == self.df_sanitory_inspection.Address) & (self.df_yelp_business.name == self.df_sanitory_inspection.Restaurant_Name), 'inner')
-		self.df = self.df.join(self.df_yelp_rating, "business_id", 'inner')
+		#self.df = self.df.join(self.df_yelp_rating, "business_id", 'inner').select("business_id", "name", "address", "latitude", "longitude", "stars", "Categoriy_Name", "Current_Demerits", "user_id", "ratings")
+
+
+	def spark_create_block(self):
+		self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
+		self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
+		self.df = self.df.select("latitude", self.determine_block_lat_ids_udf("latitude").alia("latitude_id"))
+		self.df = self.df.select("longitude", self.determine_block_log_ids_udf("longitude").alia("longitude_id"))
+
+	def spark_ranking(self):
+		"""
+        calculates restaurant recommendation and ranks with Spark DataFrame
+        """
+
+
 
 	def save_to_postgresql(self):
 		"""
