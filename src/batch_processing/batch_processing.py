@@ -68,9 +68,18 @@ class BatchProcessor:
 		"""
 		save batch processing results into PostgreSQL database and adds necessary index
 		"""
-		config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
+		config = {key: self.psql_config[key] for key in ["url", "format", "driver", "user", "password", "batch_mode"]}
 		config["dbtable"] = self.psql_config["dbtable_batch"]
-		postgre.save_to_postgresql(self.df, config)
+		self.df.write\
+			.format(config["format"])\
+    		.option("url", config["url"])\
+    		.option("driver", config["driver"])\
+    		.option("dbtable", config["dbtable"])\
+    		.option("user", config["user"])\
+    		.option("password", config["password"]) \
+    		.mode(config["batch_mode"])\
+    		.save()
+
 
 	def run(self):
 		"""
@@ -79,7 +88,7 @@ class BatchProcessor:
 		self.read_from_s3()
 		self.spark_transform()
 		self.spark_create_block()
-		#self.save_to_postgresql()
+		self.save_to_postgresql()
 		
 
 
