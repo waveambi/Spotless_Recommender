@@ -7,7 +7,6 @@ from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType
-
 class BatchProcessor:
 	"""
 	class that reads data from S3 bucket, prcoesses it with Spark
@@ -24,9 +23,8 @@ class BatchProcessor:
 		self.conf = SparkConf()
 		self.sc = SparkContext(conf=self.conf)
 		self.sc.setLogLevel("ERROR")
+		self.SparkSession.sql("set SparkSession.sql.caseSensitive=true")
 		self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
-		self.spark("set spark.sql.caseSensitive=true")
-
 
 	def read_from_s3(self):
 		"""
