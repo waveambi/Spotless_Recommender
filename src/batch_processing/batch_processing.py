@@ -53,13 +53,14 @@ class BatchProcessor:
 	def spark_create_block(self):
 		self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
 		self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
-		self.df = self.df.select("latitude", self.determine_block_lat_ids_udf("latitude").alia("latitude_id"))
-		self.df = self.df.select("longitude", self.determine_block_log_ids_udf("longitude").alia("longitude_id"))
+		self.df = self.df.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
+		self.df = self.df.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
 
 	def spark_ranking(self):
 		"""
         calculates restaurant recommendation and ranks with Spark DataFrame
         """
+		# KNN and MF
 
 
 
@@ -77,6 +78,7 @@ class BatchProcessor:
 		"""
 		self.read_from_s3()
 		self.spark_transform()
+		self.spark_create_block()
 		#self.save_to_postgresql()
 		
 

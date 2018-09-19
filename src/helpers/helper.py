@@ -1,7 +1,6 @@
 import math
 import json
 import subprocess
-from datetime import datetime
 
 
 def parse_config(configfile):
