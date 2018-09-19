@@ -68,7 +68,7 @@ class BatchProcessor:
 		"""
 		save batch processing results into PostgreSQL database and adds necessary index
 		"""
-		config = {key: self.psql_config[key] for key in ["url", "format", "driver", "user", "password", "batch_mode"]}
+		config = {key: self.psql_config[key] for key in ["url", "format", "driver", "user", "password", "mode_batch"]}
 		config["dbtable"] = self.psql_config["dbtable_batch"]
 		self.df.write\
 			.format(config["format"])\
@@ -77,7 +77,7 @@ class BatchProcessor:
     		.option("dbtable", config["dbtable"])\
     		.option("user", config["user"])\
     		.option("password", config["password"]) \
-    		.mode(config["batch_mode"])\
+    		.mode(config["mode_batch"])\
     		.save()
 
 
