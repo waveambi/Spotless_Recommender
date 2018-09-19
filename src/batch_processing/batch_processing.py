@@ -34,7 +34,7 @@ class BatchProcessor:
 		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET3"], self.s3_config["FOLDER3"], self.s3_config["RAW_DATA_FILE3"])
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
 		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
-		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename)
+		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
 
 
 	def spark_transform(self):
@@ -43,7 +43,7 @@ class BatchProcessor:
 		adds information
 		"""
 		self.df_yelp_business = self.df_yelp_business.filter(self.df_yelp_business.city == "Las Vegas").select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude", "state", "stars", "review_count")
-		self.df = self.df_yelp_business.join(self.df_sanitory_inspection, self.df_yelp_business.name == self.df_sanitory_inspection.Restaurant_Name, 'inner')
+		self.df = self.df_yelp_business.join(self.df_sanitory_inspection, (self.df_yelp_business.address == self.df_sanitory_inspection.Address) & (self.df_yelp_business.name == self.df_sanitory_inspection.Restaurant_Name), 'inner')
 		self.df = self.df.join(self.df_yelp_rating, "business_id", 'inner')
 
 	def save_to_postgresql(self):
