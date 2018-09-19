@@ -47,7 +47,7 @@ class BatchProcessor:
 		self.df_yelp_rating = self.df_yelp_rating.select("review_id", "user_id", "business_id", "stars", "text").withColumnRenamed("stars", "ratings")
 		self.df_yelp_business = self.df_yelp_business.filter(self.df_yelp_business.city == "Las Vegas").select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude", "state", "stars", "review_count")
 		self.df = self.df_yelp_business.join(self.df_sanitory_inspection, (self.df_yelp_business.address == self.df_sanitory_inspection.Address) & (self.df_yelp_business.name == self.df_sanitory_inspection.Restaurant_Name), 'inner')
-		#self.df = self.df.join(self.df_yelp_rating, "business_id", 'inner').select("business_id", "name", "address", "latitude", "longitude", "stars", "Categoriy_Name", "Current_Demerits", "user_id", "ratings")
+		self.df = self.df.select("business_id", "name", "address", "latitude", "longitude", "stars", "Categoriy_Name", "Current_Demerits") #.join(self.df_yelp_rating, "business_id", 'inner')
 
 
 	def spark_create_block(self):
