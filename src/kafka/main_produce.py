@@ -6,7 +6,7 @@ from kafka_producer import MyKafkaProducer
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         sys.stderr("Usage: main_produce.py <kafkaconfigfile> <s3configfile> \n")
         sys.exit(-1)
 
