@@ -1,6 +1,5 @@
 import sys
 sys.path.append("./helpers/")
-
 import time
 import json
 import boto3
@@ -8,8 +7,6 @@ import lazyreader
 import helper
 from kafka.producer import KafkaProducer
 
-
-####################################################################
 
 class MyKafkaProducer(object):
     """
@@ -27,7 +24,6 @@ class MyKafkaProducer(object):
         self.kafka_config = helper.parse_config(kafka_configfile)
         self.schema       = helper.parse_config(schema_file)
         self.s3_config    = helper.parse_config(s3_configfile)
-
         self.producer = KafkaProducer(bootstrap_servers=self.kafka_config["BROKERS_IP"])
 
 
@@ -37,7 +33,7 @@ class MyKafkaProducer(object):
         :type msg: dict     message for which to generate the key
         :rtype   : str      key that has to be of type bytes
         """
-        msgwithkey = helpers.add_block_fields(msg)
+        msgwithkey = helper.add_block_fields(msg)
         if msgwithkey is None:
             return
         x, y = msgwithkey["block_lonid"], msgwithkey["block_latid"]

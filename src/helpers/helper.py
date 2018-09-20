@@ -40,7 +40,7 @@ def determine_block_lat_ids(lat):
     :rtype : (int, int)       tuples which contain x and y ids
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
-    corner = lat-35.98
+    corner = lat - 35.98
     block_id_lat = int(math.floor(corner/0.005))
     return block_id_lat
 
@@ -53,23 +53,25 @@ def determine_block_log_ids(log):
     :rtype : (int, int)       tuples which contain x and y ids
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
-    corner = log+115.65
+    corner = log + 115.65
     block_id_log = int(math.floor(corner/0.005))
     return block_id_log
 
-def add_block_fields(lat, log):
+def add_block_fields(record):
     """
-    adds fields block_id ((int, int)), block_latid (int), block_lonid (int)
+    adds fields block_id ((int, int)), sub_block_id ((int, int)), block_latid (int), block_lonid (int)
     to the record based on existing fields longitude and latitude
     returns None if unable to add fields
     :type record: dict      record into which insert new fields
     :rtype      : dict      record with inserted new fields
     """
     try:
-        record["block_id"]= determine_block_ids(lat, log)
+        log, lat = [record[field] for field in ["longitude", "latitude"]]
+        record["longtitude_id"] = determine_block_lat_ids(log)
+        record["latitude_id"] = determine_block_lat_ids(lat)
     except:
         return
-    return record
+    return dict(record)
 
 
 

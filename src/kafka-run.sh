@@ -7,22 +7,10 @@ KAFKACONFIGFILE=$PWD/config/kafka.config
 TOPIC= "mytopic"
 NUM_PARTITIONS= 3
 REPL_FACTOR= 2
-RETENTION=3600000
-ZOOKEEPER_IP=`grep ZOOKEEPER $KAFKACONFIGFILE | sed s/".*_IP"//g | sed s/[" "\"]//g | sed s/^.//g | sed s/.$//g`
-BROKERS_IP=`grep BROKERS $KAFKACONFIGFILE | sed s/".*_IP"//g | sed s/[" "\"]//g | sed s/^.//g | sed s/.$//g`
-convert () {
-        ans=""
-        for item in `echo $1 | sed s/","/" "/g` ; do
-                left=`echo $item | sed s/":.*"//g`
-                right=`echo $item | sed s/".*:"//g`
-                it=`echo $left | sed s/^.//g`
-                ans="$ans,${!it}:$right"
-        done
-        ans=`echo $ans | sed s/^.//g`
-        echo $ans
-}
-ZOOKEEPER_IP=$(convert $ZOOKEEPER_IP)
-BROKERS_IP=$(convert $BROKERS_IP)
+RETENTION= 3600000
+ZOOKEEPER_IP= "ip-10-0-0-14:9092, ip-10-0-0-11:9092, ip-10-0-0-9:9092"
+BROKERS_IP= "ip-10-0-0-14:2181, ip-10-0-0-11:2181, ip-10-0-0-9:2181"
+
 case $1 in
   --create)
     kafka-topics.sh --create --zookeeper $ZOOKEEPER_IP \

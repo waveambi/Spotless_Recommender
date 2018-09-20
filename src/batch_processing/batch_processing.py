@@ -35,7 +35,7 @@ class BatchProcessor:
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
 		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
-		self.df_sanitory_inspection = self.df_sanitory_inspection.groupby('name').agg({'Current_Demerits':'mean'})
+		#self.df_sanitory_inspection = self.df_sanitory_inspection.groupby('name').agg({'Current_Demerits':'mean'}).withColumnRenamed("")
 
 
 	def spark_transform(self):
@@ -60,7 +60,6 @@ class BatchProcessor:
         calculates restaurant recommendation and ranks with Spark DataFrame
         """
 		# KNN and MF
-
 
 
 	def save_to_postgresql(self):

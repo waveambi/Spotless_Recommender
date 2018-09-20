@@ -13,7 +13,6 @@ def read_from_postgresql(sqlContext, config):
     return eval(command)
 
 
-
 def add_index_postgresql(dbtable, column, config):
     """
     adds index to PostgreSQL table dbtable on column
