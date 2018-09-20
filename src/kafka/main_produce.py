@@ -12,5 +12,5 @@ if __name__ == "__main__":
 
     kafka_configfile, s3_configfile = sys.argv[1:3]
 
-    prod = MyKafkaProducer(kafka_configfile, schema_file, s3_configfile)
+    prod = MyKafkaProducer(kafka_configfile, s3_configfile)
     prod.produce_msgs()

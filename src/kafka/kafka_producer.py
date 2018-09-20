@@ -12,7 +12,7 @@ class MyKafkaProducer(object):
     """
     class that implements Kafka producers that ingest data from S3 bucket
     """
-    def __init__(self, kafka_configfile, schema_file, s3_configfile):
+    def __init__(self, kafka_configfile, s3_configfile):
         """
         class constructor that initializes the instance according to the configurations
         of the S3 bucket and Kafka
