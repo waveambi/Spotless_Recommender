@@ -53,8 +53,8 @@ class MyKafkaProducer(object):
 
             for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
                 message_info = line.strip().split(",")
-                message_info[0] = float(message_info[0])
-                message_info[1] = float(message_info[1])
+                #message_info[0] = float(message_info[0])
+                #message_info[1] = float(message_info[1])
                 schema_list = ['latitude', 'longitude', 'user_id']
                 msg = dict(zip(schema_list, message_info))
 
