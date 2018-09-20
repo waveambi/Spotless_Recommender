@@ -4,12 +4,12 @@ S3CONFIGFILE=$PWD/config/s3bucket.config
 SCHEMAFILE=$PWD/config/schema_for_streaming.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 
-TOPIC= "mytopic"
-NUM_PARTITIONS= 3
-REPL_FACTOR= 2
-RETENTION= 3600000
-ZOOKEEPER_IP= "ip-10-0-0-14:9092, ip-10-0-0-11:9092, ip-10-0-0-9:9092"
-BROKERS_IP= "ip-10-0-0-14:2181, ip-10-0-0-11:2181, ip-10-0-0-9:2181"
+TOPIC="mytopic"
+NUM_PARTITIONS=3
+REPL_FACTOR=2
+RETENTION=3600000
+ZOOKEEPER_IP="ip-10-0-0-14:9092, ip-10-0-0-11:9092, ip-10-0-0-9:9092"
+BROKERS_IP="ip-10-0-0-14:2181, ip-10-0-0-11:2181, ip-10-0-0-9:2181"
 
 case $1 in
   --create)
