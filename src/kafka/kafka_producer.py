@@ -67,5 +67,4 @@ class MyKafkaProducer(object):
                                        value=json.dumps(msg),
                                        key=self.get_key(msg))
                     msg_cnt += 1
-
                 time.sleep(0.01)
