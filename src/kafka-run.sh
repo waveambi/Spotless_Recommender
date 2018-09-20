@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 S3CONFIGFILE=$PWD/config/s3bucket.config
-SCHEMAFILE=$PWD/config/schema_for_streaming.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 
 TOPIC="mytopic"
@@ -20,7 +19,7 @@ case $1 in
                              --config retention.ms=$RETENTION
     ;;
   --produce)
-    python kafka/main_produce.py $KAFKACONFIGFILE $SCHEMAFILE $S3CONFIGFILE &
+    python kafka/main_produce.py $KAFKACONFIGFILE $S3CONFIGFILE &
     ;;
   --describe)
     kafka-topics.sh --describe --zookeeper $ZOOKEEPER_IP --topic $TOPIC

@@ -3,7 +3,7 @@ sys.path.append("./helpers/")
 import time
 import json
 import boto3
-import lazyreader
+import csv
 import helper
 from kafka.producer import KafkaProducer
 
@@ -12,7 +12,6 @@ class MyKafkaProducer(object):
     """
     class that implements Kafka producers that ingest data from S3 bucket
     """
-
     def __init__(self, kafka_configfile, schema_file, s3_configfile):
         """
         class constructor that initializes the instance according to the configurations
@@ -22,7 +21,6 @@ class MyKafkaProducer(object):
         :type s3_configfile   : str     path to S3 config file
         """
         self.kafka_config = helper.parse_config(kafka_configfile)
-        self.schema       = helper.parse_config(schema_file)
         self.s3_config    = helper.parse_config(s3_configfile)
         self.producer = KafkaProducer(bootstrap_servers=self.kafka_config["BROKERS_IP"])
 
@@ -36,9 +34,14 @@ class MyKafkaProducer(object):
         msgwithkey = helper.add_block_fields(msg)
         if msgwithkey is None:
             return
-        x, y = msgwithkey["block_lonid"], msgwithkey["block_latid"]
+        x, y = msgwithkey["latitude_id"], msgwithkey["longitude_id"]
         return str((x*137+y)%77703).encode()
 
+    def lazy_reader(self, obj):
+        with open(obj) as f:
+            r = csv.reader(f)
+            for row in f:
+                yield(row)
 
     def produce_msgs(self):
         """
@@ -47,16 +50,17 @@ class MyKafkaProducer(object):
         msg_cnt = 0
 
         while True:
-
             s3 = boto3.client('s3')
             obj = s3.get_object(Bucket=self.s3_config["BUCKET"],
                                 Key="{}/{}".format(self.s3_config["FOLDER"],
                                                    self.s3_config["STREAMING_FILE"]))
 
-            for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
-
-                message_info = line.strip()
-                msg = helpers.map_schema(message_info, self.schema)
+            for line in self.lazy_reader(obj):
+                message_info = line.strip().split(",")
+                message_info[0] = float(message_info[0])
+                message_info[1] = float(message_info[1])
+                schema_list = ['latitude', 'longitude', 'user_id']
+                msg = dict(zip(schema_list, message_info))
 
                 if msg is not None:
                     self.producer.send(self.kafka_config["TOPIC"],
@@ -64,4 +68,4 @@ class MyKafkaProducer(object):
                                        key=self.get_key(msg))
                     msg_cnt += 1
 
-                time.sleep(0.001)
+                time.sleep(0.01)
