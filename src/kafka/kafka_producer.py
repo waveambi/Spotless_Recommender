@@ -5,6 +5,7 @@ import json
 import boto3
 import csv
 import helper
+import lazyreader
 from kafka.producer import KafkaProducer
 
 
@@ -37,11 +38,6 @@ class MyKafkaProducer(object):
         x, y = msgwithkey["latitude_id"], msgwithkey["longitude_id"]
         return str((x*137+y)%77703).encode()
 
-    def lazy_reader(self, obj):
-        with open(obj) as f:
-            r = csv.reader(f)
-            for row in f:
-                yield(row)
 
     def produce_msgs(self):
         """
@@ -55,7 +51,7 @@ class MyKafkaProducer(object):
                                 Key="{}/{}".format(self.s3_config["FOLDER"],
                                                    self.s3_config["STREAMING_FILE"]))
 
-            for line in self.lazy_reader(obj):
+            for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
                 message_info = line.strip().split(",")
                 message_info[0] = float(message_info[0])
                 message_info[1] = float(message_info[1])
