@@ -2,8 +2,7 @@ import sys
 sys.path.append("./helpers/")
 import json
 import helper
-import postgre
-from pyspark import SparkContext, SparkConf
+from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType
@@ -14,7 +13,8 @@ class BatchProcessor:
 	"""
 	def __init__(self, s3_configfile, psql_configfile):
 		"""
-		class constructor that initializes the instance according to the configurations of the S3 bucket, raw data and PostgreSQL table
+		class constructor that initializes the Spark job according to the configurations of
+		the S3 bucket, and PostgreSQL connection
 		:type s3_configfile:     str  path to S3 config file
 		:type psql_configfile:   str  path tp psql config file
 		"""
@@ -22,16 +22,16 @@ class BatchProcessor:
 		self.psql_config = helper.parse_config(psql_configfile)
 		self.conf = SparkConf()
 		self.sc = SparkContext(conf=self.conf)
-		self.sc.setLogLevel("ERROR")
 		self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
+		self.sc.setLogLevel("ERROR")
 
 	def read_from_s3(self):
 		"""
-		reads files from s3 bucket defined by s3_configfile and creates Spark DataFrame
+		reads files from s3 bucket defined by s3_configfile and creates Spark Dataframe
 		"""
-		yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET1"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE1"])
-		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET2"], self.s3_config["FOLDER2"], self.s3_config["RAW_DATA_FILE2"])
-		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET3"], self.s3_config["FOLDER3"], self.s3_config["RAW_DATA_FILE3"])
+		yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["YELP_FOLDER"], self.s3_config["YELP_BUSINESS_DATA_FILE"])
+		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["YELP_FOLDER"], self.s3_config["YELP_REVIEW_DATA_FILE"])
+		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["INSPECTION_FOLDER"], self.s3_config["INSPECTION_DATA_FILE"])
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
 		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
