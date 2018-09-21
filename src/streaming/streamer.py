@@ -8,7 +8,7 @@ import postgre
 import numpy as np
 from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 from pyspark import SparkContext, SparkConf
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, SQLContext
 from pyspark.streaming import StreamingContext
 
 class SparkStreamerFromKafka:
@@ -83,7 +83,7 @@ class Streamer(SparkStreamerFromKafka):
         :type start_offset:      int        offset from which to read from partitions of Kafka topic
         """
         SparkStreamerFromKafka.__init__(self, kafka_configfile, stream_configfile, psql_configfile)
-        self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
+        self.sqlContext = SQLContext(self.sc)
         self.load_batch_data()
         self.psql_n = 0
 
@@ -94,7 +94,7 @@ class Streamer(SparkStreamerFromKafka):
         """
         config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
         config["query"] = "(SELECT * FROM Rankings) as df_batch"
-        self.df_batch = self.spark.load \
+        self.df_batch = self.sqlContext.load \
                         .format("jdbc") \
                         .option("url", config["url"]) \
                         .option("driver", config["driver"]) \
