@@ -98,6 +98,7 @@ class Streamer(SparkStreamerFromKafka):
                         .option("dbtable", config['dbtable_batch'] ) \
                         .option("user", config["user"]) \
                         .option("password", config["password"]) \
+                        .load()
         #print("loaded batch with {} rows".format(self.df_batch.count()))
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
 
@@ -143,7 +144,7 @@ class Streamer(SparkStreamerFromKafka):
             # save data
             configs = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
             configs["dbtable"] = self.psql_config["dbtable_stream"]
-            
+
 
 
         except:
