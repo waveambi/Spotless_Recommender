@@ -66,8 +66,6 @@ class SparkStreamerFromKafka:
         self.ssc.awaitTermination()
 
 
-####################################################################
-
 class Streamer(SparkStreamerFromKafka):
     """
     class that provides each taxi driver with the top-n pickup spots
@@ -92,7 +90,7 @@ class Streamer(SparkStreamerFromKafka):
         reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
         """
         config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
-        config["query"] = "(SELECT * FROM Rankings) as df_batch"
+        config["query"] = "(SELECT * FROM Ranking) as df_batch"
         self.df_batch = self.spark.read \
                         .format("jdbc") \
                         .option("url", config["url"]) \
@@ -102,7 +100,7 @@ class Streamer(SparkStreamerFromKafka):
                         .option("password", config["password"]) \
         #print("loaded batch with {} rows".format(self.df_batch.count()))
 
-'''
+
     def process_each_rdd(self, time, rdd):
         """
         for every record in rdd, queries database historic_data for the answer
@@ -203,4 +201,3 @@ class Streamer(SparkStreamerFromKafka):
 
         process = self.process_each_rdd
         self.dataStream.foreachRDD(process)
-'''
