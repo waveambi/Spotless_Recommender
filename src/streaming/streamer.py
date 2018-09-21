@@ -103,7 +103,7 @@ class Streamer(SparkStreamerFromKafka):
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
 
 
-    def process_each_rdd(self, rdd):
+    def process_each_rdd(self, time, rdd):
         """
         for every record in rdd, queries database historic_data for the answer
         :type rdd:  RDD          Spark RDD from the stream
