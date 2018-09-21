@@ -5,7 +5,7 @@ from streamer import Streamer
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 4:
         sys.stderr.write(
             "Usage: spark-submit --packages <packages> main_stream.py <kafkaconfigfile> <streamconfigfile> <postgresconfigfile> \n")
         sys.exit(-1)

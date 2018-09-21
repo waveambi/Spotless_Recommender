@@ -3,7 +3,6 @@ S3CONFIGFILE=$PWD/config/s3bucket.config
 PSQLCONFIGFILE=$PWD/config/postgresql.config
 AUX_FILES=$PWD/helpers/helper.py
 
-SCHEMAFILE=$PWD/config/schema_for_streaming.config
 STREAMCONFIGFILE=$PWD/config/streaming.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 
