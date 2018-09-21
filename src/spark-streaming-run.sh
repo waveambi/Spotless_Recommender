@@ -13,5 +13,5 @@ spark-submit --master spark://ip-10-0-0-7:7077 \
              --py-files $AUX_FILES \
              --driver-memory 4G \
              --executor-memory 4G \
-             streaming/main_stream.py \
+             streaming/main_streaming.py \
              $KAFKACONFIGFILE $STREAMCONFIGFILE $PSQLCONFIGFILE
