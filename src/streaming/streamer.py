@@ -101,7 +101,7 @@ class Streamer(SparkStreamerFromKafka):
                         .option("dbtable", config['query'] ) \
                         .option("user", config["user"]) \
                         .option("password", config["password"]) \
-        print("loaded batch with {} rows".format(self.df_batch.count()))
+        #print("loaded batch with {} rows".format(self.df_batch.count()))
 
 '''
     def process_each_rdd(self, time, rdd):
