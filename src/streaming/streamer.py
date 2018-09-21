@@ -8,7 +8,7 @@ import postgre
 import numpy as np
 from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 from pyspark import SparkContext, SparkConf
-from pyspark.sql import SparkSession, SQLContext
+from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 
 class SparkStreamerFromKafka:
@@ -83,7 +83,6 @@ class Streamer(SparkStreamerFromKafka):
         :type start_offset:      int        offset from which to read from partitions of Kafka topic
         """
         SparkStreamerFromKafka.__init__(self, kafka_configfile, stream_configfile, psql_configfile)
-        self.sqlContext = SQLContext(self.sc)
         self.load_batch_data()
         self.psql_n = 0
 
@@ -92,13 +91,13 @@ class Streamer(SparkStreamerFromKafka):
         """
         reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
         """
-        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
+        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
         config["query"] = "(SELECT * FROM Rankings) as df_batch"
-        self.df_batch = self.sqlContext.load \
+        self.df_batch = self.spark.read \
                         .format("jdbc") \
                         .option("url", config["url"]) \
                         .option("driver", config["driver"]) \
-                        .option("dbtable", config['query'] ) \
+                        .option("dbtable", config['dbtable_batch'] ) \
                         .option("user", config["user"]) \
                         .option("password", config["password"]) \
         #print("loaded batch with {} rows".format(self.df_batch.count()))
