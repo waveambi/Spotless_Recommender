@@ -188,9 +188,11 @@ class BatchProcessor:
 		executes the read from S3, transform by Spark and write to PostgreSQL database sequence
 		"""
 		self.read_from_s3()
-		self.spark_ranking_transform()
-		self.spark_create_block()
-		self.save_to_postgresql()
+		#self.spark_ranking_transform()
+		#self.spark_create_block()
+		#self.save_to_postgresql()
+		self.spark_recommendation_transform()
+		self.spark_machine_learning()
 		
 
 
