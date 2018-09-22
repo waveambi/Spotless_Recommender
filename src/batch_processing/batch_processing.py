@@ -100,14 +100,14 @@ class BatchProcessor:
 										.agg({"business_id": "count"})\
 										.withColumnRenamed("count(business_id)", "ratings_count")
 		self.df_yelp_filter_user = self.df_yelp_filter_user\
-										.filter(self.df_yelp_filter_user.ratings_count >= 5)
+										.filter(self.df_yelp_filter_user.ratings_count >= 10)
 
 		self.df_yelp_filter_business = self.df_yelp_rating\
 											.groupby("business_id")\
 											.agg({"user_id": "count"})\
 											.withColumnRenamed("count(user_id)", "ratings_count")
 		self.df_yelp_filter_business = self.df_yelp_filter_business\
-											.filter(self.df_yelp_filter_business.ratings_count >= 5)
+											.filter(self.df_yelp_filter_business.ratings_count >= 10)
 
 		self.df_yelp_rating_sample = self.df_yelp_rating\
 										.join(self.df_yelp_filter_user,	self.df_yelp_rating.user_id == self.df_yelp_filter_user.user_id, "inner")\
