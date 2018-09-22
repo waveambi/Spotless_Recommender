@@ -38,7 +38,7 @@ def trim_zipcode(raw_code):
     :param raw_code: str   raw zip
     :return:         str   trimmed zipcode
     """
-	if raw_code is not None:
+    if raw_code is not None:
 		if len(raw_code) == 5:
 			return raw_code
 		elif len(raw_code) == 10:
