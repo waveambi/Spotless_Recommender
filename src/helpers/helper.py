@@ -1,5 +1,6 @@
 import math
 import json
+import re
 import subprocess
 
 
@@ -7,6 +8,7 @@ def parse_config(configfile):
     """
     reads configs saved as json record in configuration file and returns them
     :type configfile: str       path to config file
+    :rtype          : dict      configs
     """
     conf = json.load(open(configfile, "r"))
     return replace_envvars_with_vals(conf)
@@ -17,6 +19,7 @@ def replace_envvars_with_vals(dic):
     for a dictionary dic which may contain values of the form "$varname",
     replaces such values with the values of corresponding environmental variables
     :type dic: dict     dictionary where to parse environmental variables
+    :rtype   : dict     dictionary with parsed environmental variables
     """
     for el in dic.keys():
         val = dic[el]
@@ -28,6 +31,59 @@ def replace_envvars_with_vals(dic):
                 dic[el] = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).stdout.read().strip()
     return dic
 
+
+def trim_zipcode(raw_code):
+    """
+    trim zip into 5-digits US standard zipcode
+    :param raw_code: str   raw zip
+    :return:         str   trimmed zipcode
+    """
+	if raw_code is not None:
+		if len(raw_code) == 5:
+			return raw_code
+		elif len(raw_code) == 10:
+			return raw_code[0:5]
+
+def format_address(address):
+    if address is not None:
+        s = address.split(',')[0]
+        s = re.sub(r"\.", "", s)
+        return s.lower()
+
+def format_name(name):
+    if name is not None:
+        s = name.lower()
+        s = s.split("@")[0].strip(" ").strip(",")
+        s = s.split("at")[0].strip(" ").strip(",")
+        s = s.split("-")[-1].strip(" ").strip(",")
+        s = re.sub(r"\s#[\S]+", "", s)
+        s = re.sub(r"\s[0-9]+", "", s)
+        s = re.sub(r"\scompany", "", s)
+        s = re.sub(r"\srestaurant", "", s)
+        s = re.sub(r"\skitchen", "", s)
+        s = re.sub(r"\sbar", "", s)
+        s = re.sub(r"\sclub", "", s)
+        s = re.sub(r"\spub", "", s)
+        s = re.sub(r"\shotel", "", s)
+        s = re.sub(r"\sgrill", "", s)
+        s = re.sub(r"\sbbq", "", s)
+        s = re.sub(r"\sfood", "", s)
+        s = re.sub(r"\sshop", "", s)
+        s = re.sub(r"\sstore", "", s)
+        s = re.sub(r"\scafe", "", s)
+        s = re.sub(r"\scoffee", "", s)
+        s = re.sub(r"\splaza", "", s)
+        s = re.sub(r"\scenter", "", s)
+        s = re.sub(r"\slas vegas", "", s)
+        s = re.sub(r"\sinc", "", s)
+        s = re.sub(r"\sthe", "", s)
+        # s = re.sub(r" ", "", s)
+        return s.lower()
+
+def fuzzy_match(s1, s2):
+    from fuzzywuzzy import fuzz
+    ratio = fuzz.ratio(s1, s2)
+    return ratio
 
 # lat min = 35.98  max = 36.31 log  min -115.65 max  -115.04
 def determine_block_lat_ids(lat):
