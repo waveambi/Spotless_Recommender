@@ -33,7 +33,7 @@ class BatchProcessor:
 		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["YELP_FOLDER"], self.s3_config["YELP_REVIEW_DATA_FILE"])
 		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["INSPECTION_FOLDER"], self.s3_config["INSPECTION_DATA_FILE"])
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
-		self.df_yelp_rating = self.spark.read.json(yelp_rating_filename)
+		self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
 		#self.df_sanitory_inspection = self.df_sanitory_inspection.groupby('name').agg({'Current_Demerits':'mean'}).withColumnRenamed("")
 
@@ -56,7 +56,6 @@ class BatchProcessor:
 															   "Avg_Inspection_Demerits").dropna()
 		self.df_sanitory_summary = self.df_sanitory_summary.withColumn("Formatted_Address", self.format_address_udf("Address"))
 		self.df_sanitory_summary = self.df_sanitory_summary.withColumn("Formatted_Name", self.format_name_udf("Location_Name"))
-
 		self.df_yelp_business = self.df_yelp_business\
 									.filter(self.df_yelp_business.city == "Las Vegas")\
 									.select("business_id", "name", "address", "city", "postal_code",\
@@ -66,10 +65,14 @@ class BatchProcessor:
 		self.df_yelp_business = self.df_yelp_business.withColumn("formatted_name", self.format_name_udf("name"))
 		self.df_joined = self.df_yelp_business.join(self.df_sanitory_summary, (self.df_yelp_business.formatted_address == self.df_sanitory_summary.Formatted_Address) \
 													& (self.df_yelp_business.postal_code == self.df_sanitory_summary.Zipcode), 'inner')
-		self.df_ranking = self.df_joined.withColumn("ratio", self.fuzzy_match_udf("formatted_name", "Formatted_Name"))\
-								.filter(self.df_joined.ratio >= 60)\
-								.select("business_id", "name", "address", "latitude", "longitude", "stars", "Avg_Inspection_Demerits")
-
+		self.df_joined = self.df_joined.withColumn("ratio", self.fuzzy_match_udf("formatted_name", "Formatted_Name"))
+		self.df_ranking = self.df_joined.filter(self.df_joined.ratio >= 60)\
+								.select("business_id", "name", "address", "latitude",\
+										"longitude", "stars", "Avg_Inspection_Demerits")
+		self.df_ranking = self.df_ranking.groupby("business_id", "name", "address", "latitude", "longitude", "stars")\
+							.agg({"Avg_Inspection_Demerits": "mean"})\
+							.withColumnRenamed("avg(Avg_Inspection_Demerits)", "Avg_Inspection_Demerits")\
+							.dropna()
 
 	def spark_recommendation_transform(self):
 		"""
@@ -78,11 +81,8 @@ class BatchProcessor:
 		"""
 		self.df_yelp_rating = self.df_yelp_rating.select("review_id", "user_id", "business_id", "stars", "text")\
 									.withColumnRenamed("stars", "ratings")
-
-		self.df_yelp_rating = self.df_yelp_rating.select("review_id", "user_id", "business_id", "stars", "text")\
-									.withColumnRenamed("stars", "ratings")
 		self.df_yelp_business = self.df_yelp_business.filter(self.df_yelp_business.city == "Las Vegas").select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude", "state", "stars", "review_count")
-		self.df = self.df_yelp_business.join(self.df_sanitory_inspection, (self.df_yelp_business.address == self.df_sanitory_inspection.Address) & (self.df_yelp_business.name == self.df_sanitory_inspection.Restaurant_Name), 'inner')
+
 		self.df = self.df.select("business_id", "name", "address", "latitude", "longitude", "stars", "Category_Name", "Current_Demerits") #.join(self.df_yelp_rating, "business_id", 'inner')
 
 
@@ -92,7 +92,7 @@ class BatchProcessor:
 		self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
 		self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
 
-	def spark_ranking(self):
+	def spark_machine_learning(self):
 		"""
         calculates restaurant recommendation and ranks with Spark DataFrame
         """
