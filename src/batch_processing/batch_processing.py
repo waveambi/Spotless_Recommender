@@ -31,16 +31,16 @@ class BatchProcessor:
 		"""
 		yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["YELP_FOLDER"], self.s3_config["YELP_BUSINESS_DATA_FILE"])
 		yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["YELP_FOLDER"], self.s3_config["YELP_REVIEW_DATA_FILE"])
-		sanitory_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["INSPECTION_FOLDER"], self.s3_config["INSPECTION_DATA_FILE"])
+		sanitary_inspection_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["INSPECTION_FOLDER"], self.s3_config["INSPECTION_DATA_FILE"])
 		self.df_yelp_business = self.spark.read.json(yelp_business_filename)
 		self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
-		self.df_sanitory_inspection = self.spark.read.csv(sanitory_inspection_filename, header=True)
-		#self.df_sanitory_inspection = self.df_sanitory_inspection.groupby('name').agg({'Current_Demerits':'mean'}).withColumnRenamed("")
+		self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
+		#self.df_sanitary_inspection = self.df_sanitary_inspection.groupby('name').agg({'Current_Demerits':'mean'}).withColumnRenamed("")
 
 
 	def spark_ranking_transform(self):
 		"""
-		transforms Spark DataFrame with business dataset and sanitory inspection into cleaned data;
+		transforms Spark DataFrame with business dataset and sanitary inspection into cleaned data;
 		adds information
 		"""
 		self.trim_zipcode_udf = udf(lambda x: helper.trim_zipcode(x), StringType())
@@ -48,14 +48,14 @@ class BatchProcessor:
 		self.format_name_udf = udf(lambda x: helper.format_name(x), StringType())
 		self.fuzzy_match_udf = udf(lambda x, y: helper.fuzzy_match(x, y), IntegerType())
 
-		self.df_sanitory = self.df_sanitory.select("Restaurant_Name", "Location_Name", "Category_Name", "Address", \
+		self.df_sanitary = self.df_sanitary.select("Restaurant_Name", "Location_Name", "Category_Name", "Address", \
 												   "City", "Zip", "Location_1", "Inspection_Demerits")
-		self.df_sanitory = self.df_sanitory.withColumn("Zipcode", self.trim_zipcode_udf("Zip")).drop("Zip")
-		self.df_sanitory_summary = self.df_sanitory.groupby("Location_Name", "Address", "Zipcode").agg(
+		self.df_sanitary = self.df_sanitary.withColumn("Zipcode", self.trim_zipcode_udf("Zip")).drop("Zip")
+		self.df_sanitary_summary = self.df_sanitary.groupby("Location_Name", "Address", "Zipcode").agg(
 			{"Inspection_Demerits": "mean"}).withColumnRenamed("avg(Inspection_Demerits)",
 															   "Avg_Inspection_Demerits").dropna()
-		self.df_sanitory_summary = self.df_sanitory_summary.withColumn("Formatted_Address", self.format_address_udf("Address"))
-		self.df_sanitory_summary = self.df_sanitory_summary.withColumn("Formatted_Name", self.format_name_udf("Location_Name"))
+		self.df_sanitary_summary = self.df_sanitary_summary.withColumn("Formatted_Address", self.format_address_udf("Address"))
+		self.df_sanitary_summary = self.df_sanitary_summary.withColumn("Formatted_Name", self.format_name_udf("Location_Name"))
 		self.df_yelp_business = self.df_yelp_business\
 									.filter(self.df_yelp_business.city == "Las Vegas")\
 									.select("business_id", "name", "address", "city", "postal_code",\
@@ -63,8 +63,8 @@ class BatchProcessor:
 									.dropna()
 		self.df_yelp_business = self.df_yelp_business.withColumn("formatted_address", self.format_address_udf("address"))
 		self.df_yelp_business = self.df_yelp_business.withColumn("formatted_name", self.format_name_udf("name"))
-		self.df_joined = self.df_yelp_business.join(self.df_sanitory_summary, (self.df_yelp_business.formatted_address == self.df_sanitory_summary.Formatted_Address) \
-													& (self.df_yelp_business.postal_code == self.df_sanitory_summary.Zipcode), 'inner')
+		self.df_joined = self.df_yelp_business.join(self.df_sanitary_summary, (self.df_yelp_business.formatted_address == self.df_sanitary_summary.Formatted_Address) \
+													& (self.df_yelp_business.postal_code == self.df_sanitary_summary.Zipcode), 'inner')
 		self.df_joined = self.df_joined.withColumn("ratio", self.fuzzy_match_udf("formatted_name", "Formatted_Name"))
 		self.df_ranking = self.df_joined.filter(self.df_joined.ratio >= 60)\
 								.select("business_id", "name", "address", "latitude",\
