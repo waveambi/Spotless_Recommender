@@ -151,8 +151,8 @@ class BatchProcessor:
 
 		pipeline = Pipeline(stages=[als])
 		param = ParamGridBuilder()\
-				.addGrid(als.regParam = [0.01, 0.05, 0.1, 0.5])\
-				.addGrid(als.rank: [5, 10, 15])\
+				.addGrid(als.regParam, [0.01, 0.05, 0.1, 0.5])\
+				.addGrid(als.rank, [5, 10, 15])\
 				.build()
 		crossval = CrossValidator(estimator=pipeline,
 								  estimatorParamMaps=param,
