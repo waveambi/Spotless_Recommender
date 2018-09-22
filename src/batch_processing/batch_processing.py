@@ -100,14 +100,14 @@ class BatchProcessor:
 										.agg({"business_id": "count"})\
 										.withColumnRenamed("count(business_id)", "ratings_count")
 		self.df_yelp_filter_user = self.df_yelp_filter_user\
-										.filter(self.df_yelp_filter_user.ratings_count >= 3)
+										.filter(self.df_yelp_filter_user.ratings_count >= 5)
 
 		self.df_yelp_filter_business = self.df_yelp_rating\
 											.groupby("business_id")\
 											.agg({"user_id": "count"})\
 											.withColumnRenamed("count(user_id)", "ratings_count")
 		self.df_yelp_filter_business = self.df_yelp_filter_business\
-											.filter(self.df_yelp_filter_business.ratings_count >= 3)
+											.filter(self.df_yelp_filter_business.ratings_count >= 5)
 
 		self.df_yelp_rating_sample = self.df_yelp_rating\
 										.join(self.df_yelp_filter_user,	self.df_yelp_rating.user_id == self.df_yelp_filter_user.user_id, "inner")\
@@ -115,18 +115,6 @@ class BatchProcessor:
 										.join(self.df_yelp_filter_business, self.df_yelp_rating.business_id == self.df_yelp_filter_business.business_id, "inner")\
 										.drop(self.df_yelp_filter_business.business_id)\
 										.select("business_id", "user_id", "ratings")
-
-
-	def spark_create_block(self):
-		self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
-		self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
-		self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
-		self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
-
-	def spark_machine_learning(self):
-		"""
-        calculates restaurant recommendation and ranks with ALS Matrix Factorization
-        """
 		self.user_indexer = StringIndexer(inputCol="user_id", outputCol="user_id_indexed", handleInvalid='error')
 		self.user_index = self.user_indexer\
 								.fit(self.df_yelp_rating_sample.select("user_id"))\
@@ -146,6 +134,17 @@ class BatchProcessor:
 		self.df_yelp_rating_sample = self.df_yelp_rating_sample\
 											.withColumn("user_id_indexed", self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType()))\
 											.withColumn("business_id_indexed", self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
+
+	def spark_create_block(self):
+		self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
+		self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
+		self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
+		self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
+
+	def spark_recommendation_training_parameter(self):
+		"""
+        calculates restaurant recommendation and ranks with ALS Matrix Factorization
+        """
 		self.df_training, self.df_test = self.df_yelp_rating_sample.randomSplit([0.8, 0.2])
 		als = ALS(maxIter=5, coldStartStrategy="drop", userCol='user_id_indexed', itemCol='business_id_indexed', ratingCol='ratings')
 
@@ -157,7 +156,7 @@ class BatchProcessor:
 		crossval = CrossValidator(estimator=pipeline,
 								  estimatorParamMaps=param,
 								  evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
-								  numFolds=2)
+								  numFolds=3)
 		cvModel = crossval.fit(self.df_training)
 		cvModel.write.save("sample-model")
 		predictions = cvModel.transform(self.df_test)
@@ -165,6 +164,11 @@ class BatchProcessor:
 		evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
 		rmse = evaluator.evaluate(predictions)
 		rmse.write.save("rmse")
+
+	def spark_recommendation_training(self):
+		"""
+		:return:
+		"""
 
 
 	def save_to_postgresql(self):
@@ -192,7 +196,7 @@ class BatchProcessor:
 		#self.spark_create_block()
 		#self.save_to_postgresql()
 		self.spark_recommendation_transform()
-		self.spark_machine_learning()
+		self.spark_recommendation_training_parameter()
 		
 
 
