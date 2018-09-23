@@ -11,6 +11,5 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     kafka_configfile, stream_configfile, psql_configfile = sys.argv[1:4]
-
     streamer = Streamer(kafka_configfile, stream_configfile, psql_configfile)
     streamer.run()
