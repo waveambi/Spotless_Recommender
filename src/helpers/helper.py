@@ -39,16 +39,18 @@ def trim_zipcode(raw_code):
     :return:         str   trimmed zipcode
     """
     if raw_code is not None:
-		if len(raw_code) == 5:
-			return raw_code
-		elif len(raw_code) == 10:
-			return raw_code[0:5]
+        if len(raw_code) == 5:
+            return raw_code
+        elif len(raw_code) == 10:
+            return raw_code[0:5]
+
 
 def format_address(address):
     if address is not None:
         s = address.split(',')[0]
         s = re.sub(r"\.", "", s)
         return s.lower()
+
 
 def format_name(name):
     if name is not None:
@@ -80,10 +82,12 @@ def format_name(name):
         # s = re.sub(r" ", "", s)
         return s.lower()
 
+
 def fuzzy_match(s1, s2):
     from fuzzywuzzy import fuzz
     ratio = fuzz.ratio(s1, s2)
     return ratio
+
 
 # lat min = 35.98  max = 36.31 log  min -115.65 max  -115.04
 def determine_block_lat_ids(lat):
@@ -95,7 +99,7 @@ def determine_block_lat_ids(lat):
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
     corner = float(lat) - 35.98
-    block_id_lat = int(math.floor(corner/0.005))
+    block_id_lat = int(math.floor(corner / 0.005))
     return block_id_lat
 
 
@@ -108,8 +112,9 @@ def determine_block_log_ids(log):
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
     corner = float(log) + 115.65
-    block_id_log = int(math.floor(corner/0.005))
+    block_id_log = int(math.floor(corner / 0.005))
     return block_id_log
+
 
 def add_block_fields(record):
     """
@@ -126,15 +131,3 @@ def add_block_fields(record):
     except:
         return
     return dict(record)
-
-
-
-
-
-
-
-
-
-
-
-

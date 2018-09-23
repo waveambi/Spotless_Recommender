@@ -35,12 +35,10 @@ dag = DAG(
     description='DAG for the Spark Batch Job',
     schedule_interval=schedule_interval)
 
-
 task1 = BashOperator(
     task_id='run_batch_processing_job',
     bash_command='cd /home/ubuntu/Insight_Restaurant_Recommendation/src ; bash spark-batch-run.sh',
     dag=dag)
-
 
 task1.doc_md = """\
 Spark Batch Processing Job is scheduled to start every other day
