@@ -1,15 +1,16 @@
 import airflow
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
-from datetime import datetime, timedelta
+from datetime import timedelta
+from airflow.utils import timezone
 
-
+now = timezone.utcnow()
 schedule_interval = timedelta(days=1)
 
 default_args = {
     'owner': 'Tao',
     'depends_on_past': False,
-    'start_date': datetime.now() - schedule_interval,
+    'start_date': timezone.datetime(2018, 9, 1),
     'email': ['wave.songtao@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
