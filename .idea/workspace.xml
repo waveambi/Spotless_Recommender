@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/airflow/schedule.sh" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/spark-batch-machine-learning_run.sh" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,7 +28,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="229">
@@ -35,11 +38,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spark-batch-machine-learning_run.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning_run.sh">
+      <file leaf-file-name="batch_scheduler.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/airflow/batch_scheduler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="36" lean-forward="true" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
+            <state relative-caret-position="555">
+              <caret line="59" column="16" lean-forward="false" selection-start-line="59" selection-start-column="16" selection-end-line="59" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="schedule.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/airflow/schedule.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -110,6 +125,8 @@
         <option value="$PROJECT_DIR$/src/spark-batch-run.sh" />
         <option value="$PROJECT_DIR$/src/config/s3bucket.config" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
+        <option value="$PROJECT_DIR$/src/airflow/schedule.sh" />
+        <option value="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
       </list>
     </option>
   </component>
@@ -147,6 +164,12 @@
               <item name="Insight_Restaurant_Recommendation" type="b2602c69:ProjectViewProjectNode" />
               <item name="Insight_Restaurant_Recommendation" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Insight_Restaurant_Recommendation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Insight_Restaurant_Recommendation" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="airflow" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Insight_Restaurant_Recommendation" type="b2602c69:ProjectViewProjectNode" />
@@ -332,14 +355,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/batch_processing/main_batch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="21" lean-forward="true" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/helpers/postgre.py" />
     <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -606,6 +621,24 @@
         <state relative-caret-position="229">
           <caret line="52" column="51" lean-forward="false" selection-start-line="52" selection-start-column="51" selection-end-line="52" selection-end-column="51" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/airflow/schedule.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/airflow/batch_scheduler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="59" column="16" lean-forward="false" selection-start-line="59" selection-start-column="16" selection-end-line="59" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
