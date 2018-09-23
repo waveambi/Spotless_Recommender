@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/airflow/batch_scheduler.py" afterPath="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" afterPath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/helpers/helper.py" afterPath="$PROJECT_DIR$/src/helpers/helper.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/kafka/kafka_producer.py" afterPath="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/streaming/streamer.py" afterPath="$PROJECT_DIR$/src/streaming/streamer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -47,10 +44,8 @@
         <option value="$PROJECT_DIR$/src/kafka-run.sh" />
         <option value="$PROJECT_DIR$/src/kafka/main_produce.py" />
         <option value="$PROJECT_DIR$/src/config/kafka.config" />
-        <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
         <option value="$PROJECT_DIR$/src/spark-streaming-run.sh" />
         <option value="$PROJECT_DIR$/src/helpers/postgre.py" />
-        <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
         <option value="$PROJECT_DIR$/src/config/postgresql.config" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_collaborative_filtering.py" />
         <option value="$PROJECT_DIR$/src/spark-batch-machine-learning_run.sh" />
@@ -63,6 +58,8 @@
         <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
         <option value="$PROJECT_DIR$/src/helpers/helper.py" />
+        <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
+        <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
       </list>
     </option>
   </component>
@@ -431,13 +428,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/config/schema_for_streaming.config" />
-    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="22" column="11" lean-forward="false" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/config/streaming.config">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -449,13 +439,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="32" lean-forward="false" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="105" column="42" lean-forward="true" selection-start-line="105" selection-start-column="42" selection-end-line="105" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -540,6 +523,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="513">
           <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="102" column="42" lean-forward="false" selection-start-line="102" selection-start-column="42" selection-end-line="102" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="24" column="11" lean-forward="false" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
           <folding />
         </state>
       </provider>

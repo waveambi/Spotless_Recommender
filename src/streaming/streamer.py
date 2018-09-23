@@ -1,5 +1,5 @@
-
 import sys
+
 sys.path.append("./helpers/")
 import json
 import pyspark
@@ -10,6 +10,7 @@ from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
+
 
 class SparkStreamerFromKafka:
     """
@@ -24,11 +25,11 @@ class SparkStreamerFromKafka:
         :type schema_configfile: str        path to schema config file
         :type stream_configfile: str        path to stream config file
         """
-        self.kafka_config  = helper.parse_config(kafka_configfile)
+        self.kafka_config = helper.parse_config(kafka_configfile)
         self.stream_config = helper.parse_config(stream_configfile)
         self.psql_config = helper.parse_config(psql_configfile)
         self.conf = SparkConf()
-        self.sc  = SparkContext(conf=self.conf).getOrCreate()
+        self.sc = SparkContext(conf=self.conf).getOrCreate()
         self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
         self.ssc = StreamingContext(self.sc, self.stream_config["INTERVAL"])
         self.sc.setLogLevel("ERROR")
@@ -39,8 +40,7 @@ class SparkStreamerFromKafka:
         """
         topic, n = self.kafka_config["TOPIC"], self.kafka_config["PARTITIONS"]
         self.dataStream = KafkaUtils.createDirectStream(self.ssc, [topic],
-                                                {"metadata.broker.list": self.kafka_config["BROKERS_IP"]})
-
+                                                        {"metadata.broker.list": self.kafka_config["BROKERS_IP"]})
 
     def process_stream(self):
         """
@@ -49,13 +49,12 @@ class SparkStreamerFromKafka:
         self.initialize_stream()
         partitions = self.stream_config["PARTITIONS"]
         self.dataStream = (self.dataStream
-                                    .repartition(partitions)
-                                    .map(lambda x: json.loads(x))
-                                    .map(helper.add_block_fields)
-                                    .filter(lambda x: x is not None)
-                                    .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
-                                                    (x["latitude"], x["longitude"], x["datetime"]))))
-
+                           .repartition(partitions)
+                           .map(lambda x: json.loads(x))
+                           .map(helper.add_block_fields)
+                           .filter(lambda x: x is not None)
+                           .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
+                                           (x["latitude"], x["longitude"], x["datetime"]))))
 
     def run(self):
         """
@@ -84,7 +83,6 @@ class Streamer(SparkStreamerFromKafka):
         self.load_batch_data()
         self.psql_n = 0
 
-
     def load_batch_data(self):
         """
         reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
@@ -92,24 +90,21 @@ class Streamer(SparkStreamerFromKafka):
         config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
         config["query"] = "(SELECT * FROM Ranking) as df_batch"
         self.df_batch = self.spark.read \
-                        .format("jdbc") \
-                        .option("url", config["url"]) \
-                        .option("driver", config["driver"]) \
-                        .option("dbtable", config['dbtable_batch'] ) \
-                        .option("user", config["user"]) \
-                        .option("password", config["password"]) \
-                        .load()
-        #print("loaded batch with {} rows".format(self.df_batch.count()))
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config['dbtable_batch']) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .load()
+        # print("loaded batch with {} rows".format(self.df_batch.count()))
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
-
 
     def process_each_rdd(self, time, rdd):
         """
         for every record in rdd, queries database historic_data for the answer
         :type rdd:  RDD          Spark RDD from the stream
         """
-
-
 
         def select_customized_spots(x):
             """
@@ -122,7 +117,7 @@ class Streamer(SparkStreamerFromKafka):
             try:
                 length, total = len(x[3]), sum(x[3])
                 np.random.seed(4040 + int(x[0]))
-                choices = np.random.choice(length, min(3, length), p=np.array(x[3])/float(total), replace=False)
+                choices = np.random.choice(length, min(3, length), p=np.array(x[3]) / float(total), replace=False)
                 return {"vehicle_id": x[0], "vehicle_pos": list(x[1]),
                         "spot_lon": [x[2][c][0] for c in choices],
                         "spot_lat": [x[2][c][1] for c in choices],
@@ -131,15 +126,13 @@ class Streamer(SparkStreamerFromKafka):
                 return {"vehicle_id": x[0], "vehicle_pos": list(x[1]),
                         "spot_lon": [], "spot_lat": [], "datetime": x[4]}
 
-
         try:
             df_streaming = self.spark.createDataFrame(rdd)
             df_streaming.createOrReplaceTempView("df_streaming_view")
             # join the batch dataset with rdd_bcast, filter None values,
             # and from all the spot suggestions select specific for the driver to ensure no competition
-            self.reDF = self.spark.sql("select user_id, restaurant_id from df_streaming_view inner join df_batch on df_streaming_view.latitude_id == df_batch.latitude.id and df_streaming_view.longitude_id == df_batch.longitude_id  ")
-
-
+            self.reDF = self.spark.sql(
+                "select user_id, restaurant_id from df_streaming_view inner join df_batch on df_streaming_view.latitude_id == df_batch.latitude.id and df_streaming_view.longitude_id == df_batch.longitude_id  ")
 
             # save data
             configs = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
@@ -149,7 +142,6 @@ class Streamer(SparkStreamerFromKafka):
 
         except:
             pass
-
 
     def process_stream(self):
         """

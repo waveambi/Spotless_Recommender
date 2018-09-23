@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append("./helpers/")
 import time
 import json
@@ -13,6 +14,7 @@ class MyKafkaProducer(object):
     """
     class that implements Kafka producers that ingest data from S3 bucket
     """
+
     def __init__(self, kafka_configfile, s3_configfile):
         """
         class constructor that initializes the instance according to the configurations
@@ -22,9 +24,8 @@ class MyKafkaProducer(object):
         :type s3_configfile   : str     path to S3 config file
         """
         self.kafka_config = helper.parse_config(kafka_configfile)
-        self.s3_config    = helper.parse_config(s3_configfile)
+        self.s3_config = helper.parse_config(s3_configfile)
         self.producer = KafkaProducer(bootstrap_servers=self.kafka_config["BROKERS_IP"])
-
 
     def get_key(self, msg):
         """
@@ -36,8 +37,7 @@ class MyKafkaProducer(object):
         if msgwithkey is None:
             return
         x, y = msgwithkey["latitude_id"], msgwithkey["longitude_id"]
-        return str((x*137+y)%77703).encode()
-
+        return str((x * 137 + y) % 77703).encode()
 
     def produce_msgs(self):
         """
@@ -53,8 +53,8 @@ class MyKafkaProducer(object):
 
             for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
                 message_info = line.strip().split(",")
-                #message_info[0] = float(message_info[0])
-                #message_info[1] = float(message_info[1])
+                # message_info[0] = float(message_info[0])
+                # message_info[1] = float(message_info[1])
                 schema_list = ['latitude', 'longitude', 'user_id']
                 msg = dict(zip(schema_list, message_info))
 
