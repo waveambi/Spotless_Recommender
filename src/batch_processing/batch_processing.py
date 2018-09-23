@@ -5,12 +5,11 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType
-from pyspark.ml import Pipeline
-from pyspark.ml.feature import StringIndexer
-from pyspark.ml.recommendation import ALS
-from pyspark.ml.evaluation import RegressionEvaluator
-from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 
+from pyspark.ml import Pipeline, PipelineModel
+from sparknlp.annotator import SentenceDetector, Tokenizer, Normalizer, Lemmatizer, SentimentDetector
+from sparknlp.common import RegexRule
+from sparknlp.base import DocumentAssembler, Finisher
 
 class BatchProcessor:
 	"""
@@ -42,6 +41,59 @@ class BatchProcessor:
 		self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
 		self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
 		#self.df_sanitary_inspection = self.df_sanitary_inspection.groupby('name').agg({'Current_Demerits':'mean'}).withColumnRenamed("")
+
+	def spark_nlp_sentiment_analysis(self):
+		"""
+		:return:
+		"""
+		self.lemma_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
+											 self.s3_config["LEMMA_FILE"])
+		self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
+												 self.s3_config["SENTIMENT_FILE"])
+		self.df_yelp_review = self.df_yelp_review \
+								  .filter(self.df_yelp_review.city == "Las Vegas") \
+								  .select("user_id", "business_id", "stars", "text") \
+								  .withColumnRenamed("stars", "ratings")
+
+		document_assembler = DocumentAssembler() \
+							.setInputCol("text")
+		sentence_detector = SentenceDetector() \
+							.setInputCols(["document"]) \
+							.setOutputCol("sentence")
+		tokenizer = Tokenizer() \
+					.setInputCols(["sentence"]) \
+					.setOutputCol("token")
+		normalizer = Normalizer() \
+					.setInputCols(["token"]) \
+					.setOutputCol("normal")
+		lemmatizer = Lemmatizer() \
+					.setInputCols(["token"]) \
+					.setOutputCol("lemma") \
+					.setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
+		sentiment_detector = SentimentDetector() \
+					.setInputCols(["lemma", "sentence"]) \
+					.setOutputCol("sentiment_score") \
+					.setDictionary(self.sentiment_file, ",")
+		finisher = Finisher() \
+					.setInputCols(["sentiment_score"]) \
+					.setOutputCols(["sentiment"])
+		pipeline = Pipeline(stages=[
+			document_assembler, \
+			sentence_detector, \
+			tokenizer, \
+			normalizer, \
+			lemmatizer, \
+			sentiment_detector, \
+			finisher
+		])
+
+		self.df_yelp_review = pipeline \
+								.fit(self.df_yelp_review) \
+								.transform(self.df_yelp_review) \
+								.drop("text") \
+								.dropna()
+		#self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
+
 
 
 	def spark_ranking_transform(self):
@@ -86,11 +138,6 @@ class BatchProcessor:
 		self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
 		self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
 
-	def spark_recommendation_training(self):
-		"""
-		:return:
-		"""
-
 
 	def save_to_postgresql(self):
 		"""
@@ -113,11 +160,10 @@ class BatchProcessor:
 		executes the read from S3, transform by Spark and write to PostgreSQL database sequence
 		"""
 		self.read_from_s3()
+		self.spark_nlp_sentiment_analysis()
 		self.spark_ranking_transform()
 		self.spark_create_block()
 		self.save_to_postgresql()
-		self.spark_recommendation_transform()
-		self.spark_recommendation_training_parameter()
 		
 
 
