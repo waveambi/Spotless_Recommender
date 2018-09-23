@@ -51,7 +51,6 @@ class BatchProcessor:
 		self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
 												 self.s3_config["SENTIMENT_FILE"])
 		self.df_yelp_review = self.df_yelp_review \
-								  .filter(self.df_yelp_review.city == "Las Vegas") \
 								  .select("user_id", "business_id", "stars", "text") \
 								  .withColumnRenamed("stars", "ratings")
 
