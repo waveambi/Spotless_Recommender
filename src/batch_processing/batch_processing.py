@@ -57,6 +57,7 @@ class BatchProcessor:
                                                   self.s3_config["LEMMA_FILE"])
         self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
                                                       self.s3_config["SENTIMENT_FILE"])
+        self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
         self.df_yelp_review = self.df_yelp_review \
             .select("user_id", "business_id", "stars", "text") \
             .withColumnRenamed("stars", "ratings")
@@ -75,7 +76,7 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
+            .setDictionary(self.lemma_file, key_delimiter="", value_delimiter="\t")
         sentiment_detector = SentimentDetector() \
             .setInputCols(["lemma", "sentence"]) \
             .setOutputCol("sentiment_score") \
@@ -93,13 +94,11 @@ class BatchProcessor:
             finisher
         ])
 
-        self.df_yelp_review = pipeline \
-            .fit(self.df_yelp_review) \
-            .transform(self.df_yelp_review) \
-            .drop("text") \
-            .dropna()
-
-    # self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
+        self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
+        # df_sentiment_data.select("business_id", "text","sentiment").groupBy("business_id").agg({"text":"count"}).show()
+        self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", self.convert_sentiment_udf("sentiment"))
+        self.df_sentiment = self.df_sentiment.groupBy("business_id").agg({"sentiment_score": "mean"}) \
+            .withColumnRenamed({"avg(sentiment_score)": "avg_sentiment_score"})  # self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
 
 
 
@@ -132,18 +131,36 @@ class BatchProcessor:
                                                                  self.format_address_udf("address"))
         self.df_yelp_business = self.df_yelp_business.withColumn("formatted_name", self.format_name_udf("name"))
         self.df_joined = self.df_yelp_business.join(self.df_sanitary_summary, (
-        self.df_yelp_business.formatted_address == self.df_sanitary_summary.Formatted_Address) \
-                                                    & (
-                                                    self.df_yelp_business.postal_code == self.df_sanitary_summary.Zipcode),
-                                                    'inner')
+                                self.df_yelp_business.formatted_address == self.df_sanitary_summary.Formatted_Address) \
+                                 & (
+                                self.df_yelp_business.postal_code == self.df_sanitary_summary.Zipcode),
+                                'innner')
         self.df_joined = self.df_joined.withColumn("ratio", self.fuzzy_match_udf("formatted_name", "Formatted_Name"))
         self.df_ranking = self.df_joined.filter(self.df_joined.ratio >= 60) \
             .select("business_id", "name", "address", "latitude", \
                     "longitude", "stars", "Avg_Inspection_Demerits")
-        self.df_ranking = self.df_ranking.groupby("business_id", "name", "address", "latitude", "longitude", "stars") \
+        self.df_ranking = self.df_ranking.groupby("business_id") \
             .agg({"Avg_Inspection_Demerits": "mean"}) \
             .withColumnRenamed("avg(Avg_Inspection_Demerits)", "Avg_Inspection_Demerits") \
             .dropna()
+        self.df_yelp_business_slice = self.df_yelp_business.select("business_id", "name", "address", "latitude", "longitude",
+                                                         "stars")
+        self.df_ranking = self.df_ranking.join(self.df_yelp_business_slice,
+                                     (self.df_ranking.business_id == self.df_yelp_business_slice.business_id), "right").drop(
+            self.df_ranking.business_id)
+        avg_demerits = self.df_ranking.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]
+        self.df_ranking = self.df_ranking.na.fill(avg_demerits)
+
+    def spark_join_ranking_and_review(self):
+        """
+
+        :return:
+        """
+        self.df = self.df_ranking \
+                        .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
+                        .drop(self.df_sentiment.business_id) \
+                        .dropna()
+
 
     def spark_create_block(self):
         self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
@@ -157,7 +174,7 @@ class BatchProcessor:
         """
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_batch"]}
-        self.df_ranking.write \
+        self.df.write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
@@ -174,5 +191,6 @@ class BatchProcessor:
         self.read_from_s3()
         self.spark_nlp_sentiment_analysis()
         self.spark_ranking_transform()
+        self.spark_join_ranking_and_review()
         self.spark_create_block()
         self.save_to_postgresql()

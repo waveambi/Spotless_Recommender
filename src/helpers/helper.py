@@ -85,9 +85,20 @@ def format_name(name):
 
 def fuzzy_match(s1, s2):
     from fuzzywuzzy import fuzz
-    ratio = fuzz.ratio(s1, s2)
-    return ratio
+    if s1 is not None and s2 is not None:
+        ratio = fuzz.ratio(s1, s2)
+        return ratio
 
+def convert_sentiment(s):
+    if s == "positive":
+        score = 1
+    elif s == "negative":
+        score = -1
+    elif s == "neutral":
+        score = 0
+    else:
+        score = None
+    return score
 
 # lat min = 35.98  max = 36.31 log  min -115.65 max  -115.04
 def determine_block_lat_ids(lat):
