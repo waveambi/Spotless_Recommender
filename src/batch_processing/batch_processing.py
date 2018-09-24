@@ -56,6 +56,8 @@ class BatchProcessor:
                                                   self.s3_config["LEMMA_FILE"])
         self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
                                                       self.s3_config["SENTIMENT_FILE"])
+        self.lemma_dict = self.spark.read.text(self.lemma_file)
+        self.sentiment_dict = self.spark.read.text(self.sentiment_file)
         self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
         self.df_yelp_review = self.df_yelp_review \
             .select("user_id", "business_id", "stars", "text") \
@@ -82,13 +84,11 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t") \
-            .option(readAs="SPARK_DATASET")
+            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t", readAs=self.lemma_dict)
         sentiment_detector = SentimentDetector() \
             .setInputCols(["lemma", "sentence"]) \
             .setOutputCol("sentiment_score") \
-            .setDictionary(self.sentiment_file, delimiter=",") \
-            .option(readAs="SPARK_DATASET")
+            .setDictionary(self.sentiment_file, delimiter=",", readAs=self.sentiment_dict)
         finisher = Finisher() \
             .setInputCols(["sentiment_score"]) \
             .setOutputCols(["sentiment"])
