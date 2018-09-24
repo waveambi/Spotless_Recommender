@@ -60,6 +60,13 @@ class BatchProcessor:
         self.df_yelp_review = self.df_yelp_review \
             .select("user_id", "business_id", "stars", "text") \
             .withColumnRenamed("stars", "ratings")
+        self.df_yelp_business_city_filter = self.df_yelp_business \
+            .filter(self.df_yelp_business.city == "Las Vegas") \
+            .select("business_id")
+        self.df_yelp_review = self.df_yelp_review \
+            .join(self.df_yelp_business_city_filter, self.df_yelp_review.business_id
+                  == self.df_yelp_business_city_filter.business_id, 'inner') \
+            .drop(self.df_yelp_business_city_filter.business_id)
 
         document_assembler = DocumentAssembler() \
             .setInputCol("text")
@@ -75,7 +82,7 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(self.lemma_file, key_delimiter="", value_delimiter="\t")
+            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
         sentiment_detector = SentimentDetector() \
             .setInputCols(["lemma", "sentence"]) \
             .setOutputCol("sentiment_score") \
