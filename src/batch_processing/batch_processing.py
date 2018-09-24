@@ -58,6 +58,7 @@ class BatchProcessor:
                                                       self.s3_config["SENTIMENT_FILE"])
         self.lemma_dict = self.spark.read.text(self.lemma_file)
         self.sentiment_dict = self.spark.read.text(self.sentiment_file)
+
         self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
         self.df_yelp_review = self.df_yelp_review \
             .select("user_id", "business_id", "stars", "text") \
@@ -112,7 +113,7 @@ class BatchProcessor:
         self.df_sentiment = self.df_sentiment_positive.join(self.df_sentiment_negative,
                                     self.df_sentiment_positive.business_id == self.df_sentiment_negative.business_id, 'outer') \
                                 .drop(self.df_sentiment_negative.business_id)
-        self.df_sentiment = self.df_sentiment.withColum("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
+        self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
                                                         / (self.df_sentiment.positive + self.df_sentiment.negative)) \
                                 .select("business_id", "sentimen_score")
 
