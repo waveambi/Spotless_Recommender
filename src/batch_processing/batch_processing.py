@@ -115,7 +115,7 @@ class BatchProcessor:
                                 .drop(self.df_sentiment_negative.business_id)
         self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
                                                         / (self.df_sentiment.positive + self.df_sentiment.negative)) \
-                                .select("business_id", "sentimen_score")
+                                .select("business_id", "sentiment_score")
 
     def spark_ranking_transform(self):
         """
