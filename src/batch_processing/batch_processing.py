@@ -82,11 +82,11 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
+            .setDictionary(self.lemma_file, key_delimiter="", value_delimiter="\t", readAs="SPARK_DATASET")
         sentiment_detector = SentimentDetector() \
             .setInputCols(["lemma", "sentence"]) \
             .setOutputCol("sentiment_score") \
-            .setDictionary(self.sentiment_file, ",")
+            .setDictionary(self.sentiment_file, delimiter=",", readAs="SPARK_DATASET")
         finisher = Finisher() \
             .setInputCols(["sentiment_score"]) \
             .setOutputCols(["sentiment"])
@@ -101,11 +101,18 @@ class BatchProcessor:
         ])
 
         self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
-        # df_sentiment_data.select("business_id", "text","sentiment").groupBy("business_id").agg({"text":"count"}).show()
-        self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", self.convert_sentiment_udf("sentiment"))
-        self.df_sentiment = self.df_sentiment.groupBy("business_id").agg({"sentiment_score": "mean"}) \
-            .withColumnRenamed("avg(sentiment_score)",
-                               "avg_sentiment_score")  # self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
+        self.df_sentiment_positive = self.df_sentiment.filter(self.df_sentiment.sentiment == "positive")
+        self.df_sentiment_positive = self.df_sentiment_positive.groupBy("business_id").agg(
+            {"sentiment": "count"}).withColumnRenamed("count(sentiment)", "positive").na.fill(0)
+        self.df_sentiment_negative = self.df_sentiment.filter(self.df_sentiment.sentiment == "negative")
+        self.df_sentiment_negative = self.df_sentiment_negative.groupBy("business_id").agg(
+            {"sentiment": "count"}).withColumnRenamed("count(sentiment)", "negative").na.fill(0)
+        self.df_sentiment = self.df_sentiment_positive.join(self.df_sentiment_negative,
+                                    self.df_sentiment_positive.business_id == self.df_sentiment_negative.business_id, 'outer') \
+                                .drop(self.df_sentiment_negative.business_id)
+        self.df_sentiment = self.df_sentiment.withColum("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
+                                                        / (self.df_sentiment.positive + self.df_sentiment.negative)) \
+                                .select("business_id", "sentimen_score")
 
     def spark_ranking_transform(self):
         """
