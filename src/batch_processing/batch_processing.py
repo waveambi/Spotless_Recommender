@@ -47,6 +47,7 @@ class BatchProcessor:
         self.df_yelp_business = self.spark.read.json(yelp_business_filename)
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
+        self.df_sanitary.action
 
     def spark_nlp_sentiment_analysis(self):
         """
@@ -56,8 +57,8 @@ class BatchProcessor:
                                                   self.s3_config["LEMMA_FILE"])
         self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
                                                       self.s3_config["SENTIMENT_FILE"])
-        self.lemma_dict = self.spark.read.text(self.lemma_file)
-        self.sentiment_dict = self.spark.read.text(self.sentiment_file)
+        #self.lemma_dict = self.spark.read.text(self.lemma_file)
+        #self.sentiment_dict = self.spark.read.text(self.sentiment_file)
 
         self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
         self.df_yelp_review = self.df_yelp_review \
@@ -115,7 +116,7 @@ class BatchProcessor:
                                 .drop(self.df_sentiment_negative.business_id)
         self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
                                                         / (self.df_sentiment.positive + self.df_sentiment.negative)) \
-                                .select("business_id", "sentiment_score")
+                                .select("business_id", "sentiment_score").action
 
     def spark_ranking_transform(self):
         """
