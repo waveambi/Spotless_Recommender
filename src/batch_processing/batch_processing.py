@@ -84,11 +84,11 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(self.lemma_dict, key_delimiter="->", value_delimiter="\t")
+            .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
         sentiment_detector = SentimentDetector() \
             .setInputCols(["lemma", "sentence"]) \
             .setOutputCol("sentiment_score") \
-            .setDictionary(self.sentiment_dict, delimiter=",")
+            .setDictionary(self.sentiment_file, delimiter=",")
         finisher = Finisher() \
             .setInputCols(["sentiment_score"]) \
             .setOutputCols(["sentiment"])
