@@ -65,6 +65,12 @@ class SparkStreamerFromKafka:
         self.ssc.awaitTermination()
 
 
+
+
+
+
+
+
 class Streamer(SparkStreamerFromKafka):
     """
     class that provides each taxi driver with the top-n pickup spots
