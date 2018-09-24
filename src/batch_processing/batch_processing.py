@@ -98,7 +98,7 @@ class BatchProcessor:
         # df_sentiment_data.select("business_id", "text","sentiment").groupBy("business_id").agg({"text":"count"}).show()
         self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", self.convert_sentiment_udf("sentiment"))
         self.df_sentiment = self.df_sentiment.groupBy("business_id").agg({"sentiment_score": "mean"}) \
-            .withColumnRenamed({"avg(sentiment_score)": "avg_sentiment_score"})  # self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
+            .withColumnRenamed("avg(sentiment_score)", "avg_sentiment_score")  # self.df_yelp_business_review = self.df_yelp_review.groupBy("business_id").agg({""})
 
 
 
