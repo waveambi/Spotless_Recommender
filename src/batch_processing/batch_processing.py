@@ -176,7 +176,7 @@ class BatchProcessor:
         self.df = self.df_ranking \
             .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
             .drop(self.df_sentiment.business_id) \
-            .dropna().count()
+            .dropna()
 
     def spark_create_block(self):
         self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
@@ -209,4 +209,4 @@ class BatchProcessor:
         self.spark_ranking_transform()
         self.spark_join_ranking_and_review()
         self.spark_create_block()
-        #self.save_to_postgresql()
+        self.save_to_postgresql()
