@@ -209,4 +209,4 @@ class BatchProcessor:
         self.spark_ranking_transform()
         self.spark_join_ranking_and_review()
         self.spark_create_block()
-        #self.save_to_postgresql()
+        self.save_to_postgresql()
