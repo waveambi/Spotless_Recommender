@@ -47,7 +47,6 @@ class BatchProcessor:
         self.df_yelp_business = self.spark.read.json(yelp_business_filename)
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
-        self.df_sanitary
 
     def spark_nlp_sentiment_analysis(self):
         """
@@ -116,7 +115,7 @@ class BatchProcessor:
                                 .drop(self.df_sentiment_negative.business_id)
         self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
                                                         / (self.df_sentiment.positive + self.df_sentiment.negative)) \
-                                .select("business_id", "sentiment_score").action
+                                .select("business_id", "sentiment_score")
 
     def spark_ranking_transform(self):
         """
