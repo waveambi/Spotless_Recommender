@@ -176,7 +176,7 @@ class BatchProcessor:
         self.df = self.df_ranking \
             .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
             .drop(self.df_sentiment.business_id) \
-            .dropna()
+            .dropna().count()
 
     def spark_create_block(self):
         self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())

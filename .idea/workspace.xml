@@ -16,8 +16,8 @@
       <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="211" column="8" lean-forward="false" selection-start-line="211" selection-start-column="8" selection-end-line="211" selection-end-column="8" />
+            <state relative-caret-position="252">
+              <caret line="178" column="28" lean-forward="false" selection-start-line="178" selection-start-column="28" selection-end-line="178" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -545,8 +545,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="211" column="8" lean-forward="false" selection-start-line="211" selection-start-column="8" selection-end-line="211" selection-end-column="8" />
+        <state relative-caret-position="252">
+          <caret line="178" column="28" lean-forward="false" selection-start-line="178" selection-start-column="28" selection-end-line="178" selection-end-column="28" />
           <folding />
         </state>
       </provider>
