@@ -8,6 +8,6 @@ spark-submit --master spark://ip-10-0-0-7:7077 \
              --py-files $AUX_FILES \
              --driver-memory 4G \
              --executor-memory 4G \
-             batch_processing/main_batch_machine_learning.py \
+             batch_machine_learning/main_batch_machine_learning.py \
              $S3CONFIGFILE $PSQLCONFIGFILE
     
