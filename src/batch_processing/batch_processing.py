@@ -47,7 +47,7 @@ class BatchProcessor:
         self.df_yelp_business = self.spark.read.json(yelp_business_filename)
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
-        self.df_sanitary.action
+        self.df_sanitary
 
     def spark_nlp_sentiment_analysis(self):
         """
@@ -210,4 +210,4 @@ class BatchProcessor:
         self.spark_ranking_transform()
         self.spark_join_ranking_and_review()
         self.spark_create_block()
-        self.save_to_postgresql()
+        #self.save_to_postgresql()
