@@ -62,14 +62,14 @@ class BatchMachineLearning:
             .agg({"business_id": "count"}) \
             .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-            .filter(self.df_yelp_filter_user.ratings_count >= 10)
+            .filter(self.df_yelp_filter_user.ratings_count >= 100)
 
         self.df_yelp_filter_business = self.df_yelp_rating \
             .groupby("business_id") \
             .agg({"user_id": "count"}) \
             .withColumnRenamed("count(user_id)", "ratings_count")
         self.df_yelp_filter_business = self.df_yelp_filter_business \
-            .filter(self.df_yelp_filter_business.ratings_count >= 10)
+            .filter(self.df_yelp_filter_business.ratings_count >= 500)
 
         self.df_yelp_rating_sample = self.df_yelp_rating \
             .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id == self.df_yelp_filter_user.user_id, "inner") \
@@ -110,8 +110,8 @@ class BatchMachineLearning:
 
         pipeline = Pipeline(stages=[als])
         param = ParamGridBuilder() \
-            .addGrid(als.regParam, [0.01, 0.05, 0.1, 0.5]) \
-            .addGrid(als.rank, [5, 10, 15]) \
+            .addGrid(als.regParam, [0.05, 0.5]) \
+            .addGrid(als.rank, [5, 10]) \
             .build()
         crossval = CrossValidator(estimator=pipeline,
                                   estimatorParamMaps=param,
@@ -123,7 +123,7 @@ class BatchMachineLearning:
         # predictions.dropna().describe().show()
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
-        rmse.write.save("rmse")
+        #rmse.write.save("rmse")
 
     def spark_recommendation_training(self):
         """
