@@ -112,8 +112,8 @@ class BatchProcessor:
                                            functions.when(self.df_sentiment.sentiment == "positive", 1).when(
                                                self.df_sentiment.sentiment == "negative", -1).otherwise(0)) \
                             .withColumnRenamed("CASE WHEN (sentiment = positive) THEN 1 WHEN (sentiment = negative) THEN -1 ELSE 0 END", "sentiment")
-        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "avg"}).withColumnRenamed(
-            "avg(sentiment)", "sentiment_score")
+        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "mean"}).withColumnRenamed(
+            "avg(sentiment)", "avg_sentiment_score")
 
 
     def spark_ranking_transform(self):
