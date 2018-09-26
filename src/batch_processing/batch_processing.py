@@ -107,9 +107,13 @@ class BatchProcessor:
         self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
         self.df_sentiment.cache()
 
+
         self.df_sentiment = self.df_sentiment.select(self.df_sentiment.business_id,
                                            functions.when(self.df_sentiment.sentiment == "positive", 1).when(
-                                               self.df_sentiment.sentiment == "negative", -1).otherwise(0))
+                                               self.df_sentiment.sentiment == "negative", -1).otherwise(0)) \
+                            .withColumnRenamed("CASE WHEN (sentiment = positive) THEN 1 WHEN (sentiment = negative) THEN -1 ELSE 0 END", "sentiment")
+        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "mean"}).withColumnRenamed(
+            "mean(sentiment)", "sentiment_score")
 
 
     def spark_ranking_transform(self):
@@ -187,7 +191,7 @@ class BatchProcessor:
         save batch processing results into PostgreSQL database and adds necessary index
         """
         config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch"]}
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
         self.df_sentiment.write \
             .format("jdbc") \
             .option("url", config["url"]) \
@@ -196,7 +200,7 @@ class BatchProcessor:
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .mode(config["mode_batch"]) \
-            .option("numPartitions", 20) \
+            .option("numPartitions", config["nums_partition"]) \
             .save()
 
     def run(self):
