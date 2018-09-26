@@ -9,7 +9,6 @@ from pyspark.sql.types import IntegerType, StringType
 
 from pyspark.ml import Pipeline, PipelineModel
 from sparknlp.annotator import SentenceDetector, Tokenizer, Normalizer, Lemmatizer, SentimentDetector
-from sparknlp.common import RegexRule
 from sparknlp.base import DocumentAssembler, Finisher
 
 
@@ -70,6 +69,7 @@ class BatchProcessor:
             .join(self.df_yelp_business_city_filter, self.df_yelp_review.business_id
                   == self.df_yelp_business_city_filter.business_id, 'inner') \
             .drop(self.df_yelp_business_city_filter.business_id)
+        self.df_yelp_review.cache()
 
         document_assembler = DocumentAssembler() \
             .setInputCol("text")
@@ -116,6 +116,8 @@ class BatchProcessor:
         self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
                                                         / (self.df_sentiment.positive + self.df_sentiment.negative)) \
                                 .select("business_id", "sentiment_score")
+        self.df_sentiment.cache()
+
 
     def spark_ranking_transform(self):
         """
@@ -165,8 +167,9 @@ class BatchProcessor:
                                                (self.df_ranking.business_id == self.df_yelp_business_slice.business_id),
                                                "right").drop(
             self.df_ranking.business_id)
-        avg_demerits = self.df_ranking.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]
+        avg_demerits = 6.5#self.df_ranking.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]
         self.df_ranking = self.df_ranking.na.fill(avg_demerits)
+        self.df_ranking.cache()
 
     def spark_join_ranking_and_review(self):
         """
@@ -198,6 +201,7 @@ class BatchProcessor:
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .mode(config["mode_batch"]) \
+            .option("numPartitions", 20) \
             .save()
 
     def run(self):
