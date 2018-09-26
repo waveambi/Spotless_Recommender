@@ -48,7 +48,7 @@ class MyKafkaProducer(object):
         while True:
             s3 = boto3.client('s3')
             obj = s3.get_object(Bucket=self.s3_config["BUCKET"],
-                                Key="{}/{}".format(self.s3_config["FOLDER"],
+                                Key="{}/{}".format(self.s3_config["STREAMING_FOLDRER"],
                                                    self.s3_config["STREAMING_FILE"]))
 
             for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
