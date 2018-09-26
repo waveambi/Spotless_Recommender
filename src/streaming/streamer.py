@@ -66,11 +66,6 @@ class SparkStreamerFromKafka:
 
 
 
-
-
-
-
-
 class Streamer(SparkStreamerFromKafka):
     """
     class that provides each taxi driver with the top-n pickup spots
@@ -94,7 +89,6 @@ class Streamer(SparkStreamerFromKafka):
         reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
         """
         config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
-        config["query"] = "(SELECT * FROM Ranking) as df_batch"
         self.df_batch = self.spark.read \
             .format("jdbc") \
             .option("url", config["url"]) \
@@ -111,7 +105,20 @@ class Streamer(SparkStreamerFromKafka):
         for every record in rdd, queries database historic_data for the answer
         :type rdd:  RDD          Spark RDD from the stream
         """
+        def my_join(x):
+            """
+            joins the record from table with historical data with the records of the taxi drivers' locations
+            on the key (time_slot, block_latid, block_lonid)
+            schema for x: ((block_latid, block_lonid, business_id, name, ratings, demerits))
+            schema for el: (user_id, longi_id, lat_id)
+            :type x: tuple( tuple(int, int, int), tuple(float, float, int) )
+            """
+            try:
+                return map(lambda el: (el[0], (el[1], el[2]),
 
+                                      ), rdd_bcast.value[x[0]])
+            except:
+                return [None]
         def select_customized_spots(x):
             """
             chooses no more than 3 pickup spots from top-n,

@@ -112,8 +112,8 @@ class BatchProcessor:
                                            functions.when(self.df_sentiment.sentiment == "positive", 1).when(
                                                self.df_sentiment.sentiment == "negative", -1).otherwise(0)) \
                             .withColumnRenamed("CASE WHEN (sentiment = positive) THEN 1 WHEN (sentiment = negative) THEN -1 ELSE 0 END", "sentiment")
-        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "mean"}).withColumnRenamed(
-            "mean(sentiment)", "sentiment_score")
+        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "avg"}).withColumnRenamed(
+            "avg(sentiment)", "sentiment_score")
 
 
     def spark_ranking_transform(self):
@@ -192,7 +192,7 @@ class BatchProcessor:
         """
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
-        self.df_sentiment.write \
+        self.df.write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
@@ -211,5 +211,5 @@ class BatchProcessor:
         self.spark_nlp_sentiment_analysis()
         self.spark_ranking_transform()
         self.spark_create_block()
-        #self.spark_join_ranking_and_review()
+        self.spark_join_ranking_and_review()
         self.save_to_postgresql()
