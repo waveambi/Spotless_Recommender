@@ -192,7 +192,7 @@ class BatchProcessor:
         """
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
-        self.df_ranking.write \
+        self.df_sentiment.write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
