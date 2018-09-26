@@ -6,6 +6,7 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType
+from pyspark.sql import functions
 
 from pyspark.ml import Pipeline, PipelineModel
 from sparknlp.annotator import SentenceDetector, Tokenizer, Normalizer, Lemmatizer, SentimentDetector
@@ -104,19 +105,11 @@ class BatchProcessor:
         ])
 
         self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
-        self.df_sentiment_positive = self.df_sentiment.filter(self.df_sentiment.sentiment == "positive")
-        self.df_sentiment_positive = self.df_sentiment_positive.groupBy("business_id").agg(
-            {"sentiment": "count"}).withColumnRenamed("count(sentiment)", "positive").na.fill(0)
-        self.df_sentiment_negative = self.df_sentiment.filter(self.df_sentiment.sentiment == "negative")
-        self.df_sentiment_negative = self.df_sentiment_negative.groupBy("business_id").agg(
-            {"sentiment": "count"}).withColumnRenamed("count(sentiment)", "negative").na.fill(0)
-        self.df_sentiment = self.df_sentiment_positive.join(self.df_sentiment_negative,
-                                    self.df_sentiment_positive.business_id == self.df_sentiment_negative.business_id, 'outer') \
-                                .drop(self.df_sentiment_negative.business_id)
-        self.df_sentiment = self.df_sentiment.withColumn("sentiment_score", (self.df_sentiment.positive - self.df_sentiment.negative)
-                                                        / (self.df_sentiment.positive + self.df_sentiment.negative)) \
-                                .select("business_id", "sentiment_score")
         self.df_sentiment.cache()
+
+        self.df_sentiment = self.df_sentiment.select(self.df_sentiment.business_id,
+                                           functions.when(self.df_sentiment.sentiment == "positive", 1).when(
+                                               self.df_sentiment.sentiment == "negative", -1).otherwise(0))
 
 
     def spark_ranking_transform(self):
