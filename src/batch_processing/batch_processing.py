@@ -171,6 +171,13 @@ class BatchProcessor:
         self.df_ranking = self.df_ranking.na.fill(avg_demerits)
         self.df_ranking.cache()
 
+    def spark_create_block(self):
+        self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
+        self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
+        self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
+        self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
+
+
     def spark_join_ranking_and_review(self):
         """
 
@@ -181,11 +188,6 @@ class BatchProcessor:
             .drop(self.df_sentiment.business_id) \
             .dropna()
 
-    def spark_create_block(self):
-        self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
-        self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
-        self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
-        self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
 
     def save_to_postgresql(self):
         """
@@ -193,7 +195,7 @@ class BatchProcessor:
         """
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_batch"]}
-        self.df.write \
+        self.df_ranking.write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
@@ -211,6 +213,6 @@ class BatchProcessor:
         self.read_from_s3()
         self.spark_nlp_sentiment_analysis()
         self.spark_ranking_transform()
-        self.spark_join_ranking_and_review()
         self.spark_create_block()
+        #self.spark_join_ranking_and_review()
         self.save_to_postgresql()
