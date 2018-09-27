@@ -56,7 +56,7 @@ class SparkStreamerFromKafka:
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["latitude"], x["longitude"], x["user_id"]))))
         print("process_stream success")
-        print(self.dataStream.take(1))
+
     def run(self):
         """
         starts streaming
@@ -104,6 +104,7 @@ class Streamer(SparkStreamerFromKafka):
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["star"], x["avg_sentiment_score"]))))
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
+        print("load batch data successfully")
 
 
     def process_each_rdd(self, time, rdd):
