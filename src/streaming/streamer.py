@@ -119,22 +119,17 @@ class Streamer(SparkStreamerFromKafka):
             iPass = 1
 
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
-
+        df_batch = self.df_batch
         # transform rdd and broadcast to workers
         # rdd_bcast has the following schema
         # rdd_bcast = {key: [list of value]}
         # key = (time_slot, block_latid, block_lonid)
         # value = (vehicle_id, longitude, latitude, datetime)
-        rdd_bcast = (rdd.groupByKey()
-                     .collect())
-        if len(rdd_bcast) == 0:
-            return
-
-        self.rdd_bcast = self.sc.broadcast({x[0]: x[1] for x in rdd_bcast})
-
+        #rdd_bcast = (rdd.groupByKey().mapValues(lambda x: sorted(x, key=lambda el: el[0])).collect())
         # join the batch dataset with rdd_bcast, filter None values,
         # and from all the spot suggestions select specific for the driver to ensure no competition
-        self.resDF = self.df_batch.join(self.rdd_bcast)#.reduceByKey(lambda x,y: x+y)
+        self.resDF = self.dataStream.transform(lambda rdd: rdd.join.df_batch)#.reduceByKey(lambda x,y: x+y)
+
 
         # save data
         config = {key: self.psql_config[key] for key in
