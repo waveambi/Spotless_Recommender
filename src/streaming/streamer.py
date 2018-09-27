@@ -112,49 +112,6 @@ class Streamer(SparkStreamerFromKafka):
         :type rdd:  RDD          Spark RDD from the stream
         """
 
-        def my_join(x):
-            """
-            joins the record from table with historical data with the records of the taxi drivers' locations
-            on the key (time_slot, block_latid, block_lonid)
-            schema for x: ((block_latid, block_lonid), (longitude, latitude, passengers))
-            schema for el: (vehicle_id, longitude, latitude, datetime)
-            :type x: tuple( tuple(int, int, int), tuple(float, float, int) )
-            """
-            try:
-                return map(lambda el: (el[0],
-                                       (el[1], el[2]),
-                                       zip(x[1][0], x[1][1]),
-                                       x[1][2],
-                                       el[3]), rdd_bcast.value[x[0]])
-            except:
-                return [None]
-
-        def select_customized_spots(x):
-            """
-            chooses no more than 3 pickup spots from top-n,
-            based on the total number of rides from that spot
-            and on the order in which the drivers send their location data
-            schema for x: (vehicle_id, (longitude, latitude), [list of spots (lon, lat)], [list of passenger pickups], datetime)
-            :type x: tuple( str, tuple(float, float), list[tuple(float, float)], tuple(int, list[int]), str )
-            """
-            try:
-                length, total = len(x[3]), sum(x[3])
-                np.random.seed(4040 + int(x[0]))
-                choices = np.random.choice(length, min(3, length), p=np.array(x[3]) / float(total), replace=False)
-                return {"vehicle_id": x[0], "vehicle_pos": list(x[1]),
-                        "spot_lon": [x[2][c][0] for c in choices],
-                        "spot_lat": [x[2][c][1] for c in choices],
-                        "datetime": x[4]}
-            except:
-                return {"vehicle_id": x[0], "vehicle_pos": list(x[1]),
-                        "spot_lon": [], "spot_lat": [], "datetime": x[4]}
-
-        global iPass
-        try:
-            iPass += 1
-        except:
-            iPass = 1
-
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
 
         try:
@@ -173,7 +130,7 @@ class Streamer(SparkStreamerFromKafka):
 
             # join the batch dataset with rdd_bcast, filter None values,
             # and from all the spot suggestions select specific for the driver to ensure no competition
-            resDF = self.sc.union(self.df_batch).reduceByKey(lambda x,y: x+y)
+            self.resDF = self.sc.union(self.df_batch).reduceByKey(lambda x,y: x+y)
 
             # save data
             config = {key: self.psql_config[key] for key in
