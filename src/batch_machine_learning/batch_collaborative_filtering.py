@@ -123,12 +123,32 @@ class BatchMachineLearning:
         # predictions.dropna().describe().show()
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
+        print("model's RMSE is ", rmse)
         #rmse.write.save("rmse")
+        self.df_results = cvModel.transform(self.df_yelp_rating_sample)
 
     def spark_recommendation_training(self):
         """
         :return:
         """
+
+
+    def save_to_postgresql(self):
+        """
+        save batch processing results into PostgreSQL database and adds necessary index
+        """
+        config = {key: self.psql_config[key] for key in
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
+        self.df_results.write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_batch"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
 
     def run(self):
         """
