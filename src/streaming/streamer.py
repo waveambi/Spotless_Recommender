@@ -127,6 +127,8 @@ class Streamer(SparkStreamerFromKafka):
         #rdd_bcast = (rdd.groupByKey().mapValues(lambda x: sorted(x, key=lambda el: el[0])).collect())
         # join the batch dataset with rdd_bcast, filter None values,
         # and from all the spot suggestions select specific for the driver to ensure no competition
+        if rdd.isEmpty():
+            return
         self.resDF = rdd.join(self.df_batch)#.reduceByKey(lambda x,y: x+y)
 
         # save data
