@@ -126,7 +126,7 @@ class Streamer(SparkStreamerFromKafka):
         # key = (time_slot, block_latid, block_lonid)
         # value = (vehicle_id, longitude, latitude, datetime)
         rdd_bcast = (rdd.groupByKey()
-                     .mapValues(lambda x: sorted(x, key=lambda el: el[4]))
+                     .mapValues(lambda x: sorted(x, key=lambda el: el[0]))
                      .collect())
         if len(rdd_bcast) == 0:
             return
