@@ -135,7 +135,7 @@ class Streamer(SparkStreamerFromKafka):
 
         # join the batch dataset with rdd_bcast, filter None values,
         # and from all the spot suggestions select specific for the driver to ensure no competition
-        self.resDF = self.rdd_bcast.join(self.df_batch)#.reduceByKey(lambda x,y: x+y)
+        self.resDF = self.df_batch.join(self.rdd_bcast)#.reduceByKey(lambda x,y: x+y)
 
         # save data
         config = {key: self.psql_config[key] for key in

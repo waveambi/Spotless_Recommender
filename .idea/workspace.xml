@@ -16,8 +16,8 @@
       <file leaf-file-name="streamer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="130" column="31" lean-forward="true" selection-start-line="130" selection-start-column="31" selection-end-line="130" selection-end-column="31" />
+            <state relative-caret-position="512">
+              <caret line="137" column="45" lean-forward="false" selection-start-line="137" selection-start-column="45" selection-end-line="137" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -591,8 +591,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="130" column="31" lean-forward="true" selection-start-line="130" selection-start-column="31" selection-end-line="130" selection-end-column="31" />
+        <state relative-caret-position="512">
+          <caret line="137" column="45" lean-forward="false" selection-start-line="137" selection-start-column="45" selection-end-line="137" selection-end-column="45" />
           <folding />
         </state>
       </provider>
