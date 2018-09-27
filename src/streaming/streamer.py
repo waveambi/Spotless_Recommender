@@ -55,7 +55,8 @@ class SparkStreamerFromKafka:
                            .filter(lambda x: x is not None)
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["latitude"], x["longitude"], x["user_id"]))))
-
+        print("process_stream success")
+        print(self.dataStream.take(1))
     def run(self):
         """
         starts streaming
