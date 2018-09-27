@@ -4,7 +4,6 @@ sys.path.append("./helpers/")
 import time
 import json
 import boto3
-import csv
 import helper
 import lazyreader
 from kafka.producer import KafkaProducer

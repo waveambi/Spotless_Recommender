@@ -54,7 +54,7 @@ class SparkStreamerFromKafka:
                            .map(helper.add_block_fields)
                            .filter(lambda x: x is not None)
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
-                                           (x["latitude"], x["longitude"], x["datetime"]))))
+                                           (x["latitude"], x["longitude"], x["user_id"]))))
 
     def run(self):
         """
@@ -98,27 +98,37 @@ class Streamer(SparkStreamerFromKafka):
             .option("password", config["password"]) \
             .load()
         # print("loaded batch with {} rows".format(self.df_batch.count()))
+        self.df_batch = self.df_batch.select("business_id", "name", "address", "latitude_id", "longitude_id", "stars", "avg_sentiment_score")
+        self.df_batch = (self.df_batch.rdd.repartition(self.stream_config["PARTITIONS"])
+                           .map(lambda x: x.asDict())
+                           .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
+                                           (x["business_id"], x["name"], x["address"], x["star"], x["avg_sentiment_score"]))))
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
+
 
     def process_each_rdd(self, time, rdd):
         """
         for every record in rdd, queries database historic_data for the answer
         :type rdd:  RDD          Spark RDD from the stream
         """
+
         def my_join(x):
             """
             joins the record from table with historical data with the records of the taxi drivers' locations
             on the key (time_slot, block_latid, block_lonid)
-            schema for x: ((block_latid, block_lonid, business_id, name, ratings, demerits))
-            schema for el: (user_id, longi_id, lat_id)
+            schema for x: ((block_latid, block_lonid), (longitude, latitude, passengers))
+            schema for el: (vehicle_id, longitude, latitude, datetime)
             :type x: tuple( tuple(int, int, int), tuple(float, float, int) )
             """
             try:
-                return map(lambda el: (el[0], (el[1], el[2]),
-
-                                      ), rdd_bcast.value[x[0]])
+                return map(lambda el: (el[0],
+                                       (el[1], el[2]),
+                                       zip(x[1][0], x[1][1]),
+                                       x[1][2],
+                                       el[3]), rdd_bcast.value[x[0]])
             except:
                 return [None]
+
         def select_customized_spots(x):
             """
             chooses no more than 3 pickup spots from top-n,
@@ -139,19 +149,45 @@ class Streamer(SparkStreamerFromKafka):
                 return {"vehicle_id": x[0], "vehicle_pos": list(x[1]),
                         "spot_lon": [], "spot_lat": [], "datetime": x[4]}
 
+        global iPass
         try:
-            df_streaming = self.spark.createDataFrame(rdd)
-            df_streaming.createOrReplaceTempView("df_streaming_view")
+            iPass += 1
+        except:
+            iPass = 1
+
+        print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
+
+        try:
+
+            # transform rdd and broadcast to workers
+            # rdd_bcast has the following schema
+            # rdd_bcast = {key: [list of value]}
+            # key = (time_slot, block_latid, block_lonid)
+            # value = (vehicle_id, longitude, latitude, datetime)
+            rdd_bcast = (rdd.groupByKey()
+                         .collect())
+            if len(rdd_bcast) == 0:
+                return
+
+            rdd_bcast = self.sc.broadcast({x[0]: x[1] for x in rdd_bcast})
+
             # join the batch dataset with rdd_bcast, filter None values,
             # and from all the spot suggestions select specific for the driver to ensure no competition
-            self.reDF = self.spark.sql(
-                "select user_id, restaurant_id from df_streaming_view inner join df_batch on df_streaming_view.latitude_id == df_batch.latitude.id and df_streaming_view.longitude_id == df_batch.longitude_id  ")
+            resDF = self.sc.union(self.df_batch).reduceByKey(lambda x,y: x+y)
 
             # save data
-            configs = {key: self.psql_config[key] for key in ["url", "driver", "user", "password"]}
-            configs["dbtable"] = self.psql_config["dbtable_stream"]
-
-
+            config = {key: self.psql_config[key] for key in
+                      ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
+            self.resDF.toDF().write \
+                .format("jdbc") \
+                .option("url", config["url"]) \
+                .option("driver", config["driver"]) \
+                .option("dbtable", config["dbtable_streaming"]) \
+                .option("user", config["user"]) \
+                .option("password", config["password"]) \
+                .mode(config["mode_streaming"]) \
+                .option("numPartitions", config["nums_partition"]) \
+                .save()
 
         except:
             pass
