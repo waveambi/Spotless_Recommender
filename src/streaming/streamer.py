@@ -50,7 +50,7 @@ class SparkStreamerFromKafka:
         partitions = self.stream_config["PARTITIONS"]
         self.dataStream = (self.dataStream
                            .repartition(partitions)
-                           .map(lambda x: json.loads(x))
+                           .map(lambda x: json.loads(x[1]))
                            .map(helper.add_block_fields)
                            .filter(lambda x: x is not None)
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
@@ -138,7 +138,7 @@ class Streamer(SparkStreamerFromKafka):
         # save data
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
-        self.rdd.toDF().write \
+        self.resDF.toDF().write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
