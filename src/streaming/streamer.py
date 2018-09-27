@@ -82,7 +82,6 @@ class Streamer(SparkStreamerFromKafka):
         """
         SparkStreamerFromKafka.__init__(self, kafka_configfile, stream_configfile, psql_configfile)
         self.load_batch_data()
-        self.psql_n = 0
 
     def load_batch_data(self):
         """
@@ -116,6 +115,7 @@ class Streamer(SparkStreamerFromKafka):
             iPass += 1
         except:
             iPass = 1
+
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
 
         try:
@@ -126,15 +126,16 @@ class Streamer(SparkStreamerFromKafka):
             # key = (time_slot, block_latid, block_lonid)
             # value = (vehicle_id, longitude, latitude, datetime)
             rdd_bcast = (rdd.groupByKey()
+                         .mapValues(lambda x: sorted(x, key=lambda el: el[4]))
                          .collect())
             if len(rdd_bcast) == 0:
                 return
 
-            rdd_bcast = self.sc.broadcast({x[0]: x[1] for x in rdd_bcast})
+            self.rdd_bcast = self.sc.broadcast({x[0]: x[1] for x in rdd_bcast})
 
             # join the batch dataset with rdd_bcast, filter None values,
             # and from all the spot suggestions select specific for the driver to ensure no competition
-            self.resDF = self.sc.union(self.df_batch).reduceByKey(lambda x,y: x+y)
+            self.resDF = self.rdd_bcast.join(self.df_batch)#.reduceByKey(lambda x,y: x+y)
 
             # save data
             config = {key: self.psql_config[key] for key in
