@@ -102,7 +102,7 @@ class Streamer(SparkStreamerFromKafka):
         self.df_batch = (self.df_batch.rdd.repartition(self.stream_config["PARTITIONS"])
                            .map(lambda x: x.asDict())
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
-                                           (x["business_id"], x["name"], x["address"], x["star"], x["avg_sentiment_score"]))))
+                                           (x["business_id"], x["name"], x["address"], x["stars"], x["avg_sentiment_score"]))))
         self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
         print("load batch data successfully")
 
