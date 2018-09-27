@@ -111,7 +111,11 @@ class Streamer(SparkStreamerFromKafka):
         for every record in rdd, queries database historic_data for the answer
         :type rdd:  RDD          Spark RDD from the stream
         """
-
+        global iPass
+        try:
+            iPass += 1
+        except:
+            iPass = 1
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
 
         try:
