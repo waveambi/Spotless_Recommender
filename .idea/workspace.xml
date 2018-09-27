@@ -17,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="339">
-              <caret line="134" column="31" lean-forward="false" selection-start-line="134" selection-start-column="31" selection-end-line="134" selection-end-column="31" />
+              <caret line="134" column="39" lean-forward="false" selection-start-line="134" selection-start-column="39" selection-end-line="134" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -592,7 +592,7 @@
     <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="339">
-          <caret line="134" column="31" lean-forward="false" selection-start-line="134" selection-start-column="31" selection-end-line="134" selection-end-column="31" />
+          <caret line="134" column="39" lean-forward="false" selection-start-line="134" selection-start-column="39" selection-end-line="134" selection-end-column="39" />
           <folding />
         </state>
       </provider>
