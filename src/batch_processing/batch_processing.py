@@ -162,8 +162,7 @@ class BatchProcessor:
                                                                    "stars")
         self.df_ranking = self.df_ranking.join(self.df_yelp_business_slice,
                                                (self.df_ranking.business_id == self.df_yelp_business_slice.business_id),
-                                               "right").drop(
-            self.df_ranking.business_id)
+                                               "inner").drop(self.df_ranking.business_id)
         avg_demerits = 6.5#self.df_ranking.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]
         self.df_ranking = self.df_ranking.na.fill(avg_demerits)
         self.df_ranking.cache()
