@@ -48,73 +48,6 @@ class BatchProcessor:
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_sanitary = self.spark.read.csv(sanitary_inspection_filename, header=True)
 
-    def spark_nlp_sentiment_analysis(self):
-        """
-        :return:
-        """
-        self.lemma_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
-                                                  self.s3_config["LEMMA_FILE"])
-        self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
-                                                      self.s3_config["SENTIMENT_FILE"])
-        #self.lemma_dict = self.spark.read.text(self.lemma_file)
-        #self.sentiment_dict = self.spark.read.text(self.sentiment_file)
-
-        self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
-        self.df_yelp_review = self.df_yelp_review \
-            .select("user_id", "business_id", "stars", "text") \
-            .withColumnRenamed("stars", "ratings")
-        self.df_yelp_business_city_filter = self.df_yelp_business \
-            .filter(self.df_yelp_business.city == "Las Vegas") \
-            .select("business_id")
-        self.df_yelp_review = self.df_yelp_review \
-            .join(self.df_yelp_business_city_filter, self.df_yelp_review.business_id
-                  == self.df_yelp_business_city_filter.business_id, 'inner') \
-            .drop(self.df_yelp_business_city_filter.business_id)
-        self.df_yelp_review.cache()
-
-        document_assembler = DocumentAssembler() \
-            .setInputCol("text")
-        sentence_detector = SentenceDetector() \
-            .setInputCols(["document"]) \
-            .setOutputCol("sentence")
-        tokenizer = Tokenizer() \
-            .setInputCols(["sentence"]) \
-            .setOutputCol("token")
-        normalizer = Normalizer() \
-            .setInputCols(["token"]) \
-            .setOutputCol("normal")
-        lemmatizer = Lemmatizer() \
-            .setInputCols(["token"]) \
-            .setOutputCol("lemma") \
-            .setDictionary(self.lemma_file, key_delimiter="", value_delimiter="\t")
-        sentiment_detector = SentimentDetector() \
-            .setInputCols(["lemma", "sentence"]) \
-            .setOutputCol("sentiment_score") \
-            .setDictionary(self.sentiment_file, delimiter=",")
-        finisher = Finisher() \
-            .setInputCols(["sentiment_score"]) \
-            .setOutputCols(["sentiment"])
-        pipeline = Pipeline(stages=[
-            document_assembler, \
-            sentence_detector, \
-            tokenizer, \
-            normalizer, \
-            lemmatizer, \
-            sentiment_detector, \
-            finisher
-        ])
-
-        self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
-        self.df_sentiment.cache()
-
-
-        self.df_sentiment = self.df_sentiment.select(self.df_sentiment.business_id,
-                                           functions.when(self.df_sentiment.sentiment == "positive", 1).when(
-                                               self.df_sentiment.sentiment == "negative", -1).otherwise(0)) \
-                            .withColumnRenamed("CASE WHEN (sentiment = positive) THEN 1 WHEN (sentiment = negative) THEN -1 ELSE 0 END", "sentiment")
-        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "mean"}).withColumnRenamed(
-            "avg(sentiment)", "avg_sentiment_score")
-
 
     def spark_ranking_transform(self):
         """
@@ -163,9 +96,72 @@ class BatchProcessor:
         self.df_ranking = self.df_ranking.join(self.df_yelp_business_slice,
                                                (self.df_ranking.business_id == self.df_yelp_business_slice.business_id),
                                                "inner").drop(self.df_ranking.business_id)
-        avg_demerits = 6.5#self.df_ranking.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]
-        self.df_ranking = self.df_ranking.na.fill(avg_demerits)
         self.df_ranking.cache()
+
+    def spark_nlp_sentiment_analysis(self):
+        """
+        :return:
+        """
+        self.lemma_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
+                                                  self.s3_config["LEMMA_FILE"])
+        self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"], self.s3_config["TEXT_CORPUS_FOLDER"], \
+                                                      self.s3_config["SENTIMENT_FILE"])
+
+
+        self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
+        self.df_yelp_review = self.df_yelp_review \
+            .select("user_id", "business_id", "stars", "text") \
+            .withColumnRenamed("stars", "ratings")
+        self.df_id_filter = self.df_ranking.select("business_id")
+        self.df_yelp_review = self.df_yelp_review \
+            .join(self.df_id_filter, self.df_yelp_review.business_id
+                  == self.df_id_filter.business_id, 'inner') \
+            .drop(self.df_id_filter.business_id)
+        self.df_yelp_review.cache()
+
+        document_assembler = DocumentAssembler() \
+            .setInputCol("text")
+        sentence_detector = SentenceDetector() \
+            .setInputCols(["document"]) \
+            .setOutputCol("sentence")
+        tokenizer = Tokenizer() \
+            .setInputCols(["sentence"]) \
+            .setOutputCol("token")
+        normalizer = Normalizer() \
+            .setInputCols(["token"]) \
+            .setOutputCol("normal")
+        lemmatizer = Lemmatizer() \
+            .setInputCols(["token"]) \
+            .setOutputCol("lemma") \
+            .setDictionary(self.lemma_file, key_delimiter="", value_delimiter="\t")
+        sentiment_detector = SentimentDetector() \
+            .setInputCols(["lemma", "sentence"]) \
+            .setOutputCol("sentiment_score") \
+            .setDictionary(self.sentiment_file, delimiter=",")
+        finisher = Finisher() \
+            .setInputCols(["sentiment_score"]) \
+            .setOutputCols(["sentiment"])
+        pipeline = Pipeline(stages=[
+            document_assembler, \
+            sentence_detector, \
+            tokenizer, \
+            normalizer, \
+            lemmatizer, \
+            sentiment_detector, \
+            finisher
+        ])
+
+        self.df_sentiment = pipeline.fit(self.df_yelp_review).transform(self.df_yelp_review)
+        self.df_sentiment.cache()
+
+        self.df_sentiment = self.df_sentiment.select(self.df_sentiment.business_id,
+                                           functions.when(self.df_sentiment.sentiment == "positive", 1).when(
+                                               self.df_sentiment.sentiment == "negative", -1).otherwise(0)) \
+                            .withColumnRenamed("CASE WHEN (sentiment = positive) THEN 1 WHEN (sentiment = negative) THEN -1 ELSE 0 END", "sentiment")
+        self.df_sentiment = self.df_sentiment.groupby("business_id").agg({"sentiment": "mean"}).withColumnRenamed(
+            "avg(sentiment)", "avg_sentiment_score")
+
+
 
     def spark_create_block(self):
         self.determine_block_lat_ids_udf = udf(lambda z: helper.determine_block_lat_ids(z), IntegerType())
@@ -179,11 +175,18 @@ class BatchProcessor:
 
         :return:
         """
+        self.calculate_score_udf = udf(lambda x,y,z: helper.calculate_score(x,y,z), IntegerType())
         self.df = self.df_ranking \
             .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
             .drop(self.df_sentiment.business_id) \
             .dropna()
-
+        avg_demerits = self.df.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0] # around 6.5~
+        print("Average score on sanitory inspections is ", avg_demerits)
+        avg_rating = self.df.agg({"stars": "mean"}).collect()[0][0]
+        print("Average rating on yelp review is ", avg_rating)
+        avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0]
+        print("Average sentiment on yelp review is ", avg_sentiment)
+        self.df = self.df.withColumn("Score", self.calculate_score_udf("avg_sentiment_score", "stars", "Avg_Inspection_Demerits"))
 
     def save_to_postgresql(self):
         """
@@ -202,13 +205,26 @@ class BatchProcessor:
             .option("numPartitions", config["nums_partition"]) \
             .save()
 
+    def read_from_postgresql(self):
+        """
+        reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
+        """
+        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
+        self.df_batch = self.spark.read \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config['dbtable_batch']) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .load()
     def run(self):
         """
         executes the read from S3, transform by Spark and write to PostgreSQL database sequence
         """
         self.read_from_s3()
-        self.spark_nlp_sentiment_analysis()
         self.spark_ranking_transform()
+        self.spark_nlp_sentiment_analysis()
         self.spark_create_block()
         self.spark_join_ranking_and_review()
         self.save_to_postgresql()

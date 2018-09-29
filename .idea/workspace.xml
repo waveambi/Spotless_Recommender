@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="" />
+    <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config/postgresql.config" afterPath="$PROJECT_DIR$/src/config/postgresql.config" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/helpers/helper.py" afterPath="$PROJECT_DIR$/src/helpers/helper.py" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="streamer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="streamer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="103" column="56" lean-forward="false" selection-start-line="103" selection-start-column="56" selection-end-line="103" selection-end-column="56" />
+            <state relative-caret-position="240">
+              <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="98" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -24,38 +28,28 @@
       <file leaf-file-name="helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="29">
-              <caret line="84" column="0" lean-forward="true" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="102" column="19" lean-forward="false" selection-start-line="102" selection-start-column="4" selection-end-line="102" selection-end-column="19" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="false">
+      <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="602">
+              <caret line="229" column="33" lean-forward="true" selection-start-line="229" selection-start-column="33" selection-end-line="229" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-              <caret line="5" column="46" lean-forward="false" selection-start-line="5" selection-start-column="46" selection-end-line="5" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="48" column="16" lean-forward="false" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kafka_producer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="855">
-              <caret line="57" column="58" lean-forward="false" selection-start-line="57" selection-start-column="58" selection-end-line="57" selection-end-column="58" />
+              <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -75,9 +69,11 @@
       <find>BUCKET1</find>
       <find>sanitory</find>
       <find>collect</find>
+      <find>df_city_filter</find>
     </findStrings>
     <replaceStrings>
       <replace>sanitary</replace>
+      <replace>df_id_filter</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -102,14 +98,14 @@
         <option value="$PROJECT_DIR$/src/spark-batch-run.sh" />
         <option value="$PROJECT_DIR$/src/airflow/schedule.sh" />
         <option value="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
-        <option value="$PROJECT_DIR$/src/helpers/helper.py" />
         <option value="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
         <option value="$PROJECT_DIR$/src/config/s3bucket.config" />
         <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
         <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
-        <option value="$PROJECT_DIR$/src/config/postgresql.config" />
         <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
+        <option value="$PROJECT_DIR$/src/helpers/helper.py" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
+        <option value="$PROJECT_DIR$/src/config/postgresql.config" />
       </list>
     </option>
   </component>
@@ -134,7 +130,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -194,6 +189,7 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -283,7 +279,7 @@
     <frame x="32" y="23" width="1316" height="790" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26373628" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26766092" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32808024" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -501,13 +497,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/main_batch_machine_learning.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -567,16 +556,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
+        <state relative-caret-position="720">
           <caret line="48" column="16" lean-forward="false" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/main_batch_machine_learning.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="98" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="102" column="19" lean-forward="false" selection-start-line="102" selection-start-column="4" selection-end-line="102" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2460">
-          <caret line="164" column="89" lean-forward="true" selection-start-line="164" selection-start-column="89" selection-end-line="164" selection-end-column="89" />
+        <state relative-caret-position="602">
+          <caret line="229" column="33" lean-forward="true" selection-start-line="229" selection-start-column="33" selection-end-line="229" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -584,23 +597,7 @@
     <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="46" lean-forward="false" selection-start-line="5" selection-start-column="46" selection-end-line="5" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="84" column="0" lean-forward="true" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="103" column="56" lean-forward="false" selection-start-line="103" selection-start-column="56" selection-end-line="103" selection-end-column="56" />
+          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
           <folding />
         </state>
       </provider>

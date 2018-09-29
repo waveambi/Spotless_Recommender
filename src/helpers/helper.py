@@ -100,6 +100,13 @@ def convert_sentiment(s):
         score = None
     return score
 
+def calculate_score(x, y, z):
+    if x is not None and y is not None and z is not None:
+        score = (x + y*0.2 + 1/(z+1)) / 3
+        return score
+
+
+
 # lat min = 35.98  max = 36.31 log  min -115.65 max  -115.04
 def determine_block_lat_ids(lat):
     """
