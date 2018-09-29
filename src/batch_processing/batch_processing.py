@@ -96,7 +96,7 @@ class BatchProcessor:
                                                                    "longitude", "stars")
         self.df_ranking = self.df_ranking.join(self.df_yelp_business_slice,
                                                (self.df_ranking.business_id == self.df_yelp_business_slice.business_id),
-                                               "inner").drop(self.df_ranking.business_id)
+                                               "right").drop(self.df_ranking.business_id)
         self.df_ranking.cache()
 
     def spark_nlp_sentiment_analysis(self):
@@ -176,11 +176,12 @@ class BatchProcessor:
             .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
             .drop(self.df_sentiment.business_id) \
             .dropna()
-        #avg_demerits = self.df.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]  # around 6.5~
+        #avg_demerits = self.df.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]  # around 6.53~
         #print("Average score on sanitory inspections is ", avg_demerits)
+        self.df = self.df.fillna({"avg_sentiment_score":0.77, "stars":3.33, "Avg_Inspection_Demerits":6.53})
         #avg_rating = self.df.agg({"stars": "mean"}).collect()[0][0]
-        #print("Average rating on yelp review is ", avg_rating)
-        #avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0]
+        #print("Average rating on yelp review is ", avg_rating) 3.33
+        #avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0] 0.77
         #print("Average sentiment on yelp review is ", avg_sentiment)
         self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars",
                                                                        "Avg_Inspection_Demerits"))
