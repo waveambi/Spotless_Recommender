@@ -120,7 +120,7 @@ class BatchMachineLearning:
             .withColumn("business_id_indexed", self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
 
 
-    def spark_recommendation_training_parameter(self):
+    def spark_recommendation_prediction(self):
         """
         calculates restaurant recommendation and ranks with ALS Matrix Factorization
         """
@@ -147,13 +147,6 @@ class BatchMachineLearning:
         self.df_results = cvModel.recommendForAllUsers(10)
 
 
-    def spark_recommendation_prediction(self):
-        """
-        :return:
-        """
-
-
-
     def save_to_postgresql(self):
         """
         save batch processing results into PostgreSQL database and adds necessary index
@@ -178,4 +171,5 @@ class BatchMachineLearning:
         """
         self.read_from_s3()
         self.spark_recommendation_transform()
-        self.spark_recommendation_training_parameter()
+        self.spark_recommendation_prediction()
+        self.save_to_postgresql()
