@@ -18,6 +18,7 @@ class BatchMachineLearning:
     and saves the results into PostgreSQL database
     """
 
+
     def __init__(self, s3_configfile, psql_configfile):
         """
         class constructor that initializes the Spark job according to the configurations of
@@ -32,6 +33,7 @@ class BatchMachineLearning:
         self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
         self.sc.setLogLevel("ERROR")
 
+
     def read_from_s3(self):
         """
         reads files from s3 bucket defined by s3_configfile and creates Spark Dataframe
@@ -42,6 +44,7 @@ class BatchMachineLearning:
                                                        self.s3_config["YELP_REVIEW_DATA_FILE"])
         self.df_yelp_business = self.spark.read.json(yelp_business_filename)
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
+
 
     def spark_recommendation_transform(self):
         """
@@ -54,6 +57,21 @@ class BatchMachineLearning:
         self.df_yelp_business = self.df_yelp_business \
             .filter(self.df_yelp_business.city == "Las Vegas") \
             .select("business_id", "name", "address", "latitude", "longitude")
+        config = {key: self.psql_config[key] for key in
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
+        self.df_filter_id = self.spark.read \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config['dbtable_batch']) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .load()
+        self.df_filter_id = self.df_filter_id.select("business_id")
+        self.df_yelp_business = self.df_yelp_business \
+            .join(self.df_filter_id, self.df_yelp_review.business_id
+                  == self.df_filter_id.business_id, 'inner') \
+            .drop(self.df_filter_id.business_id)
         self.df_yelp_rating = self.df_yelp_business \
             .join(self.df_yelp_review, self.df_yelp_business.business_id == self.df_yelp_review.business_id) \
             .drop(self.df_yelp_review.business_id)
@@ -62,14 +80,14 @@ class BatchMachineLearning:
             .agg({"business_id": "count"}) \
             .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-            .filter(self.df_yelp_filter_user.ratings_count >= 10)
+            .filter(self.df_yelp_filter_user.ratings_count >= 1)
 
         self.df_yelp_filter_business = self.df_yelp_rating \
             .groupby("business_id") \
             .agg({"user_id": "count"}) \
             .withColumnRenamed("count(user_id)", "ratings_count")
         self.df_yelp_filter_business = self.df_yelp_filter_business \
-            .filter(self.df_yelp_filter_business.ratings_count >= 50)
+            .filter(self.df_yelp_filter_business.ratings_count >= 1)
 
         self.df_yelp_rating_sample = self.df_yelp_rating \
             .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id == self.df_yelp_filter_user.user_id, "inner") \
@@ -100,6 +118,7 @@ class BatchMachineLearning:
             .withColumn("user_id_indexed", self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType())) \
             .withColumn("business_id_indexed", self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
 
+
     def spark_recommendation_training_parameter(self):
         """
         calculates restaurant recommendation and ranks with ALS Matrix Factorization
@@ -110,7 +129,7 @@ class BatchMachineLearning:
 
         pipeline = Pipeline(stages=[als])
         param = ParamGridBuilder() \
-            .addGrid(als.regParam, [0.05, 0.5]) \
+            .addGrid(als.regParam, [0.01, 0.1]) \
             .addGrid(als.rank, [5, 10]) \
             .build()
         crossval = CrossValidator(estimator=pipeline,
@@ -120,17 +139,18 @@ class BatchMachineLearning:
         cvModel = crossval.fit(self.df_training)
         cvModel.write.save("sample-model")
         predictions = cvModel.transform(self.df_test)
-        # predictions.dropna().describe().show()
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
         print("model's RMSE is ", rmse)
         #rmse.write.save("rmse")
-        self.df_results = cvModel.transform(self.df_yelp_rating_sample)
+        self.df_results = cvModel.recommendForAllUsers(10)
 
-    def spark_recommendation_training(self):
+
+    def spark_recommendation_prediction(self):
         """
         :return:
         """
+
 
 
     def save_to_postgresql(self):
@@ -149,6 +169,7 @@ class BatchMachineLearning:
             .mode(config["mode_batch"]) \
             .option("numPartitions", config["nums_partition"]) \
             .save()
+
 
     def run(self):
         """
