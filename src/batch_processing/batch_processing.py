@@ -176,15 +176,16 @@ class BatchProcessor:
             .join(self.df_sentiment, self.df_ranking.business_id == self.df_sentiment.business_id, 'inner') \
             .drop(self.df_sentiment.business_id) \
             .dropna()
-        avg_demerits = self.df.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]  # around 6.5~
-        print("Average score on sanitory inspections is ", avg_demerits)
-        avg_rating = self.df.agg({"stars": "mean"}).collect()[0][0]
-        print("Average rating on yelp review is ", avg_rating)
-        avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0]
-        print("Average sentiment on yelp review is ", avg_sentiment)
+        #avg_demerits = self.df.agg({"Avg_Inspection_Demerits": "mean"}).collect()[0][0]  # around 6.5~
+        #print("Average score on sanitory inspections is ", avg_demerits)
+        #avg_rating = self.df.agg({"stars": "mean"}).collect()[0][0]
+        #print("Average rating on yelp review is ", avg_rating)
+        #avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0]
+        #print("Average sentiment on yelp review is ", avg_sentiment)
         self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars",
                                                                        "Avg_Inspection_Demerits"))
-        window = Window.partitionBy(self.df["latitude_id", "longitude_id"]).orderBy(self.df['score'].desc())
+        column_list = ["latitude_id", "longitude_id"]
+        window = Window.partitionBy([col(x) for x in column_list]).orderBy(self.df['score'].desc())
         self.df = self.df.select(["latitude_id", "longitude_id", "business_id", "name", "address", "latitude", \
                                   "longitude", "score"], rank().over(window).alias('rank')).filter(col('rank') <= 10)
 
