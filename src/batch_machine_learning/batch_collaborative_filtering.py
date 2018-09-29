@@ -69,7 +69,7 @@ class BatchMachineLearning:
             .load()
         self.df_filter_id = self.df_filter_id.select("business_id")
         self.df_yelp_business = self.df_yelp_business \
-            .join(self.df_filter_id, self.df_yelp_review.business_id
+            .join(self.df_filter_id, self.df_yelp_business.business_id
                   == self.df_filter_id.business_id, 'inner') \
             .drop(self.df_filter_id.business_id)
 
