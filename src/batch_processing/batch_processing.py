@@ -187,7 +187,7 @@ class BatchProcessor:
         column_list = ["latitude_id", "longitude_id"]
         window = Window.partitionBy([col(x) for x in column_list]).orderBy(self.df['score'].desc())
         self.df = self.df.select("latitude_id", "longitude_id", "business_id", "name", "address", "latitude", "longitude", "score") \
-                    .select("*", rank().over(window).alias('rank')).filter(col('rank') <= 10)
+                    .select("*", rank().over(window).alias('rank')).filter(col('rank') <= 5)
 
     def save_to_postgresql(self):
         """
