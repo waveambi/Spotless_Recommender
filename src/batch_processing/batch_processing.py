@@ -7,8 +7,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType
 from pyspark.sql import functions
+from pyspark.sql.window import Window
+from pyspark.sql.functions import rank, col
 
-from pyspark.ml import Pipeline, PipelineModel
+
+from pyspark.ml import Pipeline
 from sparknlp.annotator import SentenceDetector, Tokenizer, Normalizer, Lemmatizer, SentimentDetector
 from sparknlp.base import DocumentAssembler, Finisher
 
@@ -186,7 +189,11 @@ class BatchProcessor:
         print("Average rating on yelp review is ", avg_rating)
         avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0]
         print("Average sentiment on yelp review is ", avg_sentiment)
-        self.df = self.df.withColumn("Score", self.calculate_score_udf("avg_sentiment_score", "stars", "Avg_Inspection_Demerits"))
+        self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars", "Avg_Inspection_Demerits"))
+        window = Window.partitionBy(self.df["latitude_id", "longitude_id"]).orderBy(self.df['score'].desc())
+        self.df = self.df.select(["latitude_id", "longitude_id", "business_id", "name", "address", "latitude", \
+                    "longitude", "score"], rank().over(window).alias('rank')).filter(col('rank') <= 10)
+
 
     def save_to_postgresql(self):
         """
@@ -205,19 +212,7 @@ class BatchProcessor:
             .option("numPartitions", config["nums_partition"]) \
             .save()
 
-    def read_from_postgresql(self):
-        """
-        reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
-        """
-        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
-        self.df_batch = self.spark.read \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config['dbtable_batch']) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .load()
+
     def run(self):
         """
         executes the read from S3, transform by Spark and write to PostgreSQL database sequence

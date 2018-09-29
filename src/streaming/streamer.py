@@ -88,8 +88,8 @@ class Streamer(SparkStreamerFromKafka):
         """
         reads result of batch transformation from PostgreSQL database, splits it into BATCH_PARTS parts
         """
-        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch"]}
-        self.df_batch = self.spark.read \
+        config = {key: self.psql_config[key] for key in ["url", "driver", "user", "password", "dbtable_batch", "dbtable_cf"]}
+        self.df_ranking_result = self.spark.read \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
@@ -97,13 +97,24 @@ class Streamer(SparkStreamerFromKafka):
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .load()
-        # print("loaded batch with {} rows".format(self.df_batch.count()))
-        self.df_batch = self.df_batch.select("business_id", "name", "address", "latitude_id", "longitude_id", "stars", "avg_sentiment_score")
-        self.df_batch = (self.df_batch.rdd.repartition(self.stream_config["PARTITIONS"])
+
+        self.df_cf = self.spark.read \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config['dbtable_cf']) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .load()
+        
+        # print("loaded batch with {} rows".format(self.df_ranking_result.count()))
+        self.df_ranking_result = self.df_ranking_result.select("business_id", "name", "address", "latitude_id", "longitude_id", "score")
+        self.df_ranking_result = (self.df_ranking_result.rdd.repartition(self.stream_config["PARTITIONS"])
                            .map(lambda x: x.asDict())
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
-                                           (x["business_id"], x["name"], x["address"], x["stars"], x["avg_sentiment_score"]))))
-        self.df_batch.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
+                                           (x["business_id"], x["name"], x["address"], x["score"]))))
+        self.df_cf = self.df_cf.rdd.repartition(self.stream_config["PARTITIONS"])
+        self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
         print("load batch data successfully")
 
 
@@ -127,7 +138,7 @@ class Streamer(SparkStreamerFromKafka):
         #rdd_bcast = (rdd.groupByKey().mapValues(lambda x: sorted(x, key=lambda el: el[0])).collect())
         # join the batch dataset with rdd_bcast, filter None values,
         # and from all the spot suggestions select specific for the driver to ensure no competition
-        self.resDF = rdd.join(self.df_batch)#.reduceByKey(lambda x,y: x+y)
+        self.resDF = rdd.join(self.df_ranking_result)#.reduceByKey(lambda x,y: x+y)
         if self.resDF.isEmpty():
             return
 
