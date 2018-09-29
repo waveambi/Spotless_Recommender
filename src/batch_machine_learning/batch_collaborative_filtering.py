@@ -72,9 +72,11 @@ class BatchMachineLearning:
             .join(self.df_filter_id, self.df_yelp_review.business_id
                   == self.df_filter_id.business_id, 'inner') \
             .drop(self.df_filter_id.business_id)
+
         self.df_yelp_rating = self.df_yelp_business \
             .join(self.df_yelp_review, self.df_yelp_business.business_id == self.df_yelp_review.business_id) \
             .drop(self.df_yelp_review.business_id)
+        '''
         self.df_yelp_filter_user = self.df_yelp_rating \
             .groupby("user_id") \
             .agg({"business_id": "count"}) \
@@ -97,6 +99,8 @@ class BatchMachineLearning:
                   self.df_yelp_rating.business_id == self.df_yelp_filter_business.business_id, "inner") \
             .drop(self.df_yelp_filter_business.business_id) \
             .select("business_id", "user_id", "ratings")
+        '''
+        self.df_yelp_rating_sample = self.df_yelp_rating.select("business_id", "user_id", "ratings")
         self.user_indexer = StringIndexer(inputCol="user_id", outputCol="user_id_indexed", handleInvalid='error')
         self.user_index = self.user_indexer \
             .fit(self.df_yelp_rating_sample.select("user_id")) \
