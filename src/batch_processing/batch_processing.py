@@ -184,7 +184,8 @@ class BatchProcessor:
         #print("Average sentiment on yelp review is ", avg_sentiment)
         self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars",
                                                                        "Avg_Inspection_Demerits"))
-        window = Window.partitionBy(self.df.select("latitude_id", "longitude_id")).orderBy(self.df['score'].desc())
+        column_list = ["latitude_id", "longitude_id"]
+        window = Window.partitionBy([col(x) for x in column_list]).orderBy(self.df['score'].desc())
         self.df = self.df.select("latitude_id", "longitude_id", "business_id", "name", "address", "latitude", "longitude", "score") \
                     .select("*", rank().over(window).alias('rank')).filter(col('rank') <= 10)
 
