@@ -5,7 +5,7 @@ STREAMCONFIGFILE=$PWD/config/streaming.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 AUX_FILES=$PWD/helpers/helper.py
 
-spark-submit --master spark://ip-10-0-0-7:7077 \
+spark-submit --master spark://ip-10-0-0-13:7077 \
              --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.2.0 \
              --jars $PWD/postgresql-42.2.5.jar \
              --py-files $AUX_FILES \
