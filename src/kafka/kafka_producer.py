@@ -54,7 +54,7 @@ class MyKafkaProducer(object):
                 message_info = line.strip().split(",")
                 # message_info[0] = float(message_info[0])
                 # message_info[1] = float(message_info[1])
-                schema_list = ['latitude', 'longitude', 'user_id']
+                schema_list = ['user_id', 'latitude', 'longitude']
                 msg = dict(zip(schema_list, message_info))
 
                 if msg is not None:
