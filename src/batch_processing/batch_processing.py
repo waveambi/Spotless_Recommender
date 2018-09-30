@@ -96,7 +96,7 @@ class BatchProcessor:
                                                                    "longitude", "stars")
         self.df_ranking = self.df_ranking.join(self.df_yelp_business_slice,
                                                (self.df_ranking.business_id == self.df_yelp_business_slice.business_id),
-                                               "right").drop(self.df_ranking.business_id)
+                                               "inner").drop(self.df_ranking.business_id)
         self.df_ranking.cache()
 
     def spark_nlp_sentiment_analysis(self):
