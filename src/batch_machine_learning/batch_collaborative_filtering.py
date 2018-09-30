@@ -32,6 +32,7 @@ class BatchMachineLearning:
         self.sc = SparkContext(conf=self.conf)
         self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
         self.sc.setLogLevel("ERROR")
+        self.sc.setCheckpointDir('/tmp')
 
 
     def read_from_s3(self):
@@ -82,7 +83,7 @@ class BatchMachineLearning:
             .agg({"business_id": "count"}) \
             .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-            .filter(self.df_yelp_filter_user.ratings_count >= 10)
+            .filter(self.df_yelp_filter_user.ratings_count >= 5)
         print("total number of users with more than 10 records is ", self.df_yelp_filter_user.count())
 
         self.df_yelp_filter_business = self.df_yelp_rating \
