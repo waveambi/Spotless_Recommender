@@ -4,8 +4,6 @@ sys.path.append("./helpers/")
 import json
 import pyspark
 import helper
-import postgre
-import numpy as np
 from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
