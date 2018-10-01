@@ -5,7 +5,7 @@ import helper
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
-from pyspark.sql.types import IntegerType, StringType
+from pyspark.sql.types import IntegerType, StringType, FloatType
 from pyspark.sql import functions
 from pyspark.sql.window import Window
 from pyspark.sql.functions import rank, col
@@ -54,7 +54,7 @@ class BatchProcessor:
         self.format_name_udf = udf(lambda x: helper.format_name(x), StringType())
         self.fuzzy_match_udf = udf(lambda x, y: helper.fuzzy_match(x, y), IntegerType())
         self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
-        self.calculate_score_udf = udf(lambda x, y, z: helper.calculate_score(x, y, z), IntegerType())
+        self.calculate_score_udf = udf(lambda x, y, z: helper.calculate_score(x, y, z), FloatType())
 
     def spark_ranking_transform(self):
         """
