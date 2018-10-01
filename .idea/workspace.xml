@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config/kafka.config" afterPath="$PROJECT_DIR$/src/config/kafka.config" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/kafka-run.sh" afterPath="$PROJECT_DIR$/src/kafka-run.sh" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,6 +18,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="14">
               <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kafka-run.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/kafka-run.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -40,7 +49,7 @@
         <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="420">
-              <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+              <caret line="28" column="27" lean-forward="true" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -59,8 +68,8 @@
       <file leaf-file-name="kafka.config" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/config/kafka.config">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+            <state relative-caret-position="75">
+              <caret line="5" column="20" lean-forward="true" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -99,7 +108,6 @@
         <option value="$PROJECT_DIR$/src/batch_processing/main_batch.py" />
         <option value="$PROJECT_DIR$/src/kafka/producer.py" />
         <option value="$PROJECT_DIR$/src/config/schema_for_streaming.config" />
-        <option value="$PROJECT_DIR$/src/kafka-run.sh" />
         <option value="$PROJECT_DIR$/src/kafka/main_produce.py" />
         <option value="$PROJECT_DIR$/src/helpers/postgre.py" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_collaborative_filtering.py" />
@@ -119,6 +127,7 @@
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
         <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
         <option value="$PROJECT_DIR$/src/config/kafka.config" />
+        <option value="$PROJECT_DIR$/src/kafka-run.sh" />
       </list>
     </option>
   </component>
@@ -496,13 +505,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/kafka-run.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="20" lean-forward="false" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/kafka/main_produce.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -579,6 +581,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/config/s3bucket.config">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="53" lean-forward="true" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="27" lean-forward="true" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="313">
@@ -597,26 +615,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/s3bucket.config">
+    <entry file="file://$PROJECT_DIR$/src/kafka-run.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="53" lean-forward="true" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+        <state relative-caret-position="75">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/config/kafka.config">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+        <state relative-caret-position="75">
+          <caret line="5" column="20" lean-forward="true" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
           <folding />
         </state>
       </provider>
