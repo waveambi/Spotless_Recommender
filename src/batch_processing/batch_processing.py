@@ -183,8 +183,7 @@ class BatchProcessor:
         avg_sentiment = self.df.agg({"avg_sentiment_score": "mean"}).collect()[0][0] #0.77
         print("Average sentiment on yelp review is ", avg_sentiment)
         self.df = self.df.fillna({"avg_sentiment_score": 0.77, "stars": 3.33, "Avg_Inspection_Demerits": 6.53})
-        self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars",
-                                                                       "Avg_Inspection_Demerits"))
+        #self.df = self.df.withColumn("score", self.calculate_score_udf("avg_sentiment_score", "stars", "Avg_Inspection_Demerits"))
         column_list = ["latitude_id", "longitude_id"]
         window = Window.partitionBy([col(x) for x in column_list]).orderBy(self.df['score'].desc())
         self.df = self.df.select("latitude_id", "longitude_id", "business_id", "name", "address", "latitude", "longitude", "score") \
