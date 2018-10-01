@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/kafka/kafka_producer.py" afterPath="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -59,8 +58,8 @@
       <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="189" column="20" lean-forward="false" selection-start-line="189" selection-start-column="20" selection-end-line="189" selection-end-column="20" />
+            <state relative-caret-position="371">
+              <caret line="188" column="130" lean-forward="false" selection-start-line="188" selection-start-column="130" selection-end-line="188" selection-end-column="130" />
               <folding />
             </state>
           </provider>
@@ -655,8 +654,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="189" column="20" lean-forward="false" selection-start-line="189" selection-start-column="20" selection-end-line="189" selection-end-column="20" />
+        <state relative-caret-position="371">
+          <caret line="188" column="130" lean-forward="false" selection-start-line="188" selection-start-column="130" selection-end-line="188" selection-end-column="130" />
           <folding />
         </state>
       </provider>
