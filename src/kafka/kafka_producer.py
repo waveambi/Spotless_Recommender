@@ -52,8 +52,6 @@ class MyKafkaProducer(object):
 
             for line in lazyreader.lazyread(obj['Body'], delimiter='\n'):
                 message_info = line.strip().split(",")
-                # message_info[0] = float(message_info[0])
-                # message_info[1] = float(message_info[1])
                 schema_list = ['user_id', 'latitude', 'longitude']
                 msg = dict(zip(schema_list, message_info))
 
@@ -62,4 +60,4 @@ class MyKafkaProducer(object):
                                        value=json.dumps(msg),
                                        key=self.get_key(msg))
                     msg_cnt += 1
-                time.sleep(0.1)
+                time.sleep(0.01)
