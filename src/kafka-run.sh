@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 S3CONFIGFILE=$PWD/config/s3bucket.config
-KAFKACONFIGFILE=$PWD/config/kafka.config
 
 TOPIC="topic_test"
 NUM_PARTITIONS=3
