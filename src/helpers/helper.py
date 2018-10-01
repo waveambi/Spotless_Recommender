@@ -118,7 +118,7 @@ def determine_block_lat_ids(lat):
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
     corner = float(lat) - 35.98
-    block_id_lat = int(math.floor(corner / 0.01))
+    block_id_lat = int(math.floor(corner / 0.005))
     return block_id_lat
 
 
@@ -131,7 +131,7 @@ def determine_block_log_ids(log):
     """
     # size of large block is 0.005  degree lat/lon, about 350 meters
     corner = float(log) + 115.65
-    block_id_log = int(math.floor(corner / 0.01))
+    block_id_log = int(math.floor(corner / 0.005))
     return block_id_log
 
 

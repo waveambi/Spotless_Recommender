@@ -85,7 +85,7 @@ class BatchProcessor:
                                                         self.df_yelp_business.postal_code == self.df_sanitary_summary.Zipcode),
                                                     'inner')
         self.df_joined = self.df_joined.withColumn("ratio", self.fuzzy_match_udf("formatted_name", "Formatted_Name"))
-        self.df_ranking = self.df_joined.filter(self.df_joined.ratio >= 60) \
+        self.df_ranking = self.df_joined.filter(self.df_joined.ratio >= 50) \
             .select("business_id", "name", "address", "latitude", \
                     "longitude", "stars", "Avg_Inspection_Demerits")
         self.df_ranking = self.df_ranking.groupby("business_id") \
