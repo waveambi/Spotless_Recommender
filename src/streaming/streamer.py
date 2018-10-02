@@ -138,11 +138,11 @@ class Streamer(SparkStreamerFromKafka):
         # and from all the spot suggestions select specific for the driver to ensure no competition
         self.resDF = rdd.join(self.df_ranking_result)
         #.reduceByKey(lambda x,y: x+y)
-        print(self.df_ranking_result.take(1))
-        print(rdd.take(1))
         if self.resDF.isEmpty():
             return
         # save data
+        print(self.resDF.take(5))
+        '''
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
         self.resDF.toDF().write \
@@ -155,7 +155,7 @@ class Streamer(SparkStreamerFromKafka):
             .mode(config["mode_streaming"]) \
             .option("numPartitions", config["nums_partition"]) \
             .save()
-
+        '''
 
     def process_stream(self):
         """
