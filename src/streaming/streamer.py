@@ -95,7 +95,7 @@ class Streamer(SparkStreamerFromKafka):
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .load()
-
+'''
         self.df_cf = self.spark.read \
             .format("jdbc") \
             .option("url", config["url"]) \
@@ -104,14 +104,14 @@ class Streamer(SparkStreamerFromKafka):
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .load()
-        
+        '''
         # print("loaded batch with {} rows".format(self.df_ranking_result.count()))
         self.df_ranking_result = self.df_ranking_result.select("business_id", "name", "address", "latitude_id", "longitude_id", "score")
         self.df_ranking_result = (self.df_ranking_result.rdd.repartition(self.stream_config["PARTITIONS"])
                            .map(lambda x: x.asDict())
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["score"]))))
-        self.df_cf = self.df_cf.rdd.repartition(self.stream_config["PARTITIONS"])
+        #self.df_cf = self.df_cf.rdd.repartition(self.stream_config["PARTITIONS"])
         self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
         print("load batch data successfully")
 
