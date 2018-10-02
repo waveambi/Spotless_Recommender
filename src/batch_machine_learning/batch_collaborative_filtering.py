@@ -32,7 +32,7 @@ class BatchMachineLearning:
         self.sc = SparkContext(conf=self.conf)
         self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
         self.sc.setLogLevel("ERROR")
-        self.sc.setCheckpointDir('/tmp')
+        self.sc.setCheckpointDir("/tmp")
 
 
     def read_from_s3(self):
@@ -135,7 +135,6 @@ class BatchMachineLearning:
 
         pipeline = Pipeline(stages=[als])
         param = ParamGridBuilder() \
-            .addGrid(als.regParam, [0.01, 0.1]) \
             .addGrid(als.rank, [5, 10]) \
             .build()
         crossval = CrossValidator(estimator=pipeline,
