@@ -141,7 +141,7 @@ class Streamer(SparkStreamerFromKafka):
         if self.resDF.isEmpty():
             return
         # save data
-        print(self.resDF.take(5))
+        print(self.resDF.take(1))
         '''
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}

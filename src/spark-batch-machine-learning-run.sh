@@ -6,7 +6,7 @@ AUX_FILES=$PWD/helpers/helper.py
 spark-submit --master spark://ip-10-0-0-13:7077 \
              --jars $PWD/postgresql-42.2.5.jar \
              --py-files $AUX_FILES \
-             --driver-memory 4G \
+             --driver-memory 6G \
              --executor-memory 4G \
              batch_machine_learning/main_batch_machine_learning.py \
              $S3CONFIGFILE $PSQLCONFIGFILE
