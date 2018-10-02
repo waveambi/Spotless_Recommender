@@ -145,7 +145,7 @@ def add_block_fields(record):
     """
     try:
         lat, log = [record[field] for field in ["latitude", "longitude"]]
-        record["longitude_id"] = determine_block_lat_ids(log)
+        record["longitude_id"] = determine_block_log_ids(log)
         record["latitude_id"] = determine_block_lat_ids(lat)
     except:
         return
