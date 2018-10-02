@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/kafka/kafka_producer.py" afterPath="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/streaming/streamer.py" afterPath="$PROJECT_DIR$/src/streaming/streamer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +16,8 @@
       <file leaf-file-name="streamer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="142" column="19" lean-forward="false" selection-start-line="142" selection-start-column="19" selection-end-line="142" selection-end-column="19" />
+            <state relative-caret-position="473">
+              <caret line="143" column="19" lean-forward="true" selection-start-line="143" selection-start-column="19" selection-end-line="143" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -597,8 +596,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="142" column="19" lean-forward="false" selection-start-line="142" selection-start-column="19" selection-end-line="142" selection-end-column="19" />
+        <state relative-caret-position="473">
+          <caret line="143" column="19" lean-forward="true" selection-start-line="143" selection-start-column="19" selection-end-line="143" selection-end-column="19" />
           <folding />
         </state>
       </provider>
