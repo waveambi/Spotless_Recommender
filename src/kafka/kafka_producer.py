@@ -19,7 +19,6 @@ class MyKafkaProducer(object):
         class constructor that initializes the instance according to the configurations
         of the S3 bucket and Kafka
         :type kafka_configfile: str     path to kafka config file
-        :type schema_file     : str     path to schema file
         :type s3_configfile   : str     path to S3 config file
         """
         self.kafka_config = helper.parse_config(kafka_configfile)
@@ -36,7 +35,7 @@ class MyKafkaProducer(object):
         if msgwithkey is None:
             return
         x, y = msgwithkey["latitude_id"], msgwithkey["longitude_id"]
-        return str((x * 137 + y) % 77703).encode()
+        return str((x * 235 + y) % 3903865).encode()
 
     def produce_msgs(self):
         """

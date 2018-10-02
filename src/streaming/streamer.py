@@ -20,8 +20,8 @@ class SparkStreamerFromKafka:
         class constructor that initializes the instance according to the configurations
         of Kafka (brokers, topic, offsets), data schema and batch interval for streaming
         :type kafka_configfile:  str        path to s3 config file
-        :type schema_configfile: str        path to schema config file
         :type stream_configfile: str        path to stream config file
+        :type psql_configfile:   str        path to psql config file
         """
         self.kafka_config = helper.parse_config(kafka_configfile)
         self.stream_config = helper.parse_config(stream_configfile)
@@ -73,11 +73,10 @@ class Streamer(SparkStreamerFromKafka):
     def __init__(self, kafka_configfile, stream_configfile, psql_configfile):
         """
         class constructor that initializes the instance according to the configurations
-        of Kafka (brokers, topic, offsets), PostgreSQL database, data schema and batch interval for streaming
+        of Kafka (brokers, topic, offsets), PostgreSQL database and batch interval for streaming
         :type kafka_configfile:  str        path to s3 config file
         :type stream_configfile: str        path to stream config file
         :type psql_configfile:   str        path to psql config file
-        :type start_offset:      int        offset from which to read from partitions of Kafka topic
         """
         SparkStreamerFromKafka.__init__(self, kafka_configfile, stream_configfile, psql_configfile)
         self.load_batch_data()
@@ -95,23 +94,11 @@ class Streamer(SparkStreamerFromKafka):
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .load()
-        '''
-        self.df_cf = self.spark.read \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config['dbtable_cf']) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .load()
-        '''
-        # print("loaded batch with {} rows".format(self.df_ranking_result.count()))
         self.df_ranking_result = self.df_ranking_result.select("business_id", "name", "address", "latitude_id", "longitude_id", "score")
         self.df_ranking_result = (self.df_ranking_result.rdd.repartition(self.stream_config["PARTITIONS"])
                            .map(lambda x: x.asDict())
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["score"]))))
-        #self.df_cf = self.df_cf.rdd.repartition(self.stream_config["PARTITIONS"])
         self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
         print("load batch data successfully")
 
@@ -128,34 +115,15 @@ class Streamer(SparkStreamerFromKafka):
             iPass = 1
 
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
-        # transform rdd and broadcast to workers
-        # rdd_bcast has the following schema
-        # rdd_bcast = {key: [list of value]}
-        # key = (time_slot, block_latid, block_lonid)
-        # value = (vehicle_id, longitude, latitude, datetime)
-        #rdd_bcast = (rdd.groupByKey().mapValues(lambda x: sorted(x, key=lambda el: el[0])).collect())
+        # rdd key = (latitude_id, logitude_id)
+        # rdd value = (vehicle_id, longitude, latitude, datetime)
         # join the batch dataset with rdd_bcast, filter None values,
-        # and from all the spot suggestions select specific for the driver to ensure no competition
+        # from all nearby restaurant suggestions select high scores
         self.resDF = rdd.join(self.df_ranking_result)
-        #.reduceByKey(lambda x,y: x+y)
         if self.resDF.isEmpty():
             return
-        # save data
-        #print(self.resDF.take(1))
-        '''
-        config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
-        self.resDF.toDF().write \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config["dbtable_streaming"]) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .mode(config["mode_streaming"]) \
-            .option("numPartitions", config["nums_partition"]) \
-            .save()
-        '''
+        print(self.resDF.take(5))
+
 
     def process_stream(self):
         """

@@ -35,17 +35,23 @@ def replace_envvars_with_vals(dic):
 def trim_zipcode(raw_code):
     """
     trim zip into 5-digits US standard zipcode
-    :param raw_code: str   raw zip
-    :return:         str   trimmed zipcode
+    :type raw_code        : str      raw zipcode string
+    :rtype trimmed_code   : str      trimmed zipcode with 5 digits
     """
     if raw_code is not None:
         if len(raw_code) == 5:
             return raw_code
         elif len(raw_code) == 10:
-            return raw_code[0:5]
+            trimmed_code = raw_code[0:5]
+            return trimmed_code
 
 
 def format_address(address):
+    """
+    format address and remove unneccessary apt number
+    :type address : str      raw address string
+    :rtype s      : str      formatted address only with street and number
+    """
     if address is not None:
         s = address.split(',')[0]
         s = re.sub(r"\.", "", s)
@@ -53,6 +59,11 @@ def format_address(address):
 
 
 def format_name(name):
+    """
+    clean restaurant name and remove common parts
+    :type name    : str      restaurant name
+    :rtype s      : str      cleaned restaurant name with unique name
+    """
     if name is not None:
         s = name.lower()
         s = s.split("@")[0].strip(" ").strip(",")
@@ -79,17 +90,28 @@ def format_name(name):
         s = re.sub(r"\slas vegas", "", s)
         s = re.sub(r"\sinc", "", s)
         s = re.sub(r"\sthe", "", s)
-        # s = re.sub(r" ", "", s)
-        return s.lower()
+        s = s.lower().strip(" ")
+        return s
 
 
 def fuzzy_match(s1, s2):
+    """
+    match business with fuzzy name
+    :type s1      : str  name string 1
+    :type s2      : str  name string 2
+    :rtype ratio  : int  similarity ratio
+    """
     from fuzzywuzzy import fuzz
     if s1 is not None and s2 is not None:
         ratio = fuzz.ratio(s1, s2)
         return ratio
 
 def convert_sentiment(s):
+    """
+    convert sentiment from positive/negative to numerical value 1/-1
+    :type s       : str  polarity string
+    :rtype score  : int  polarity numerical value
+    """
     if s == "positive":
         score = 1
     elif s == "negative":
@@ -102,42 +124,47 @@ def convert_sentiment(s):
 
 
 def calculate_score(x, y, z):
+    """
+    calculate final score combining with ratings, sentiment score and sanitary score
+    :type x       : float  average sentiment score
+    :type y       : float  yelp rating
+    :type z       : int  sanitary score
+    :rtype score  : float final score
+    """
     if x is not None and y is not None and z is not None:
         score = (x + y*0.2 + 1/(z+1)) / 3
         return score
 
 
 
-# lat min = 35.98  max = 36.31 log  min -115.65 max  -115.04
+
 def determine_block_lat_ids(lat):
     """
-    calculates ids of blocks based on given coordinates
-    :type lon: float            longitude
-    :type lat: float            latitude
-    :rtype : (int, int)       tuples which contain x and y ids
+    calculates ids of blocks based on given coordinates,
+    size of block is 0.005 around 350 meters
+    :type lat           : float  latitude
+    :rtype block_id_lat : int  latitude id
     """
-    # size of large block is 0.002  degree lat/lon, about 140 meters
-    corner = float(lat) - 35.98
+    corner = float(lat) - 35.98 # lat range from 35.98 to 36.31
     block_id_lat = int(math.floor(corner / 0.005))
     return block_id_lat
 
 
 def determine_block_log_ids(log):
     """
-    calculates ids of blocks based on given coordinates
-    :type lon: float            longitude
-    :type lat: float            latitude
-    :rtype : (int, int)       tuples which contain x and y ids
+    calculates ids of blocks based on given coordinates,
+    size of block is 0.005 around 350 meters
+    :type log           : float  logitude
+    :rtype block_id_log : int  logitude id
     """
-    # size of large block is 0.005  degree lat/lon, about 350 meters
-    corner = float(log) + 115.65
+    corner = float(log) + 115.65 #log range from -115.65 to -115.04
     block_id_log = int(math.floor(corner / 0.005))
     return block_id_log
 
 
 def add_block_fields(record):
     """
-    adds fields block_id ((int, int)), sub_block_id ((int, int)), block_latid (int), block_lonid (int)
+    adds fields block_id with lat_id and log_id
     to the record based on existing fields longitude and latitude
     returns None if unable to add fields
     :type record: dict      record into which insert new fields

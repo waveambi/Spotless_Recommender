@@ -3,30 +3,18 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime, timedelta
 
-schedule_interval = timedelta(days=1)
+schedule_interval = timedelta(days=10)
 
 default_args = {
     'owner': 'Tao',
     'depends_on_past': False,
-    'start_date': datetime(2018, 9, 1),
+    'start_date': datetime(2018, 10, 1),
     'email': ['wave.songtao@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2019, 1, 1),
-    # 'wait_for_downstream': False,
-    # 'dag': dag,
-    # 'adhoc':False,
-    # 'sla': timedelta(hours=2),
-    # 'execution_timeout': timedelta(seconds=300),
-    # 'on_failure_callback': callback_function,
-    # 'on_success_callback': callback_function,
-    # 'on_retry_callback': callback_function,
-    # 'trigger_rule': u'all_success'
+    'end_date': datetime(2019, 1, 1),
 }
 
 dag = DAG(

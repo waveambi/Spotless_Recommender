@@ -1,6 +1,6 @@
 import sys
-
 sys.path.append("./helpers/")
+
 import helper
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
@@ -14,8 +14,8 @@ from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 
 class BatchMachineLearning:
     """
-    class that reads data from S3 bucket, prcoesses it with Spark
-    and saves the results into PostgreSQL database
+    class that processes historical data, trains machine learning, tunes
+    hyper parameters and predicts results on top 5 recommendation for users
     """
 
 
@@ -49,80 +49,85 @@ class BatchMachineLearning:
 
     def spark_recommendation_transform(self):
         """
-        transform Spark DataFrame
+        transform Spark DataFrame, filter with business id
         :return:
         """
         self.df_yelp_review = self.df_yelp_review \
-            .select("user_id", "business_id", "stars") \
-            .withColumnRenamed("stars", "ratings")
+                                  .select("user_id", "business_id", "stars") \
+                                  .withColumnRenamed("stars", "ratings")
         self.df_yelp_business = self.df_yelp_business \
-            .filter(self.df_yelp_business.city == "Las Vegas") \
-            .select("business_id", "name", "address", "latitude", "longitude")
+                                    .filter(self.df_yelp_business.city == "Las Vegas") \
+                                    .select("business_id", "name", "address", "latitude", "longitude")
         config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
+                                ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
         self.df_filter_id = self.spark.read \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config['dbtable_batch']) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .load()
+                                .format("jdbc") \
+                                .option("url", config["url"]) \
+                                .option("driver", config["driver"]) \
+                                .option("dbtable", config['dbtable_batch']) \
+                                .option("user", config["user"]) \
+                                .option("password", config["password"]) \
+                                .load()
+
         self.df_filter_id = self.df_filter_id.select("business_id")
         self.df_yelp_business = self.df_yelp_business \
-            .join(self.df_filter_id, self.df_yelp_business.business_id
-                  == self.df_filter_id.business_id, 'inner') \
-            .drop(self.df_filter_id.business_id)
+                                    .join(self.df_filter_id, self.df_yelp_business.business_id
+                                                == self.df_filter_id.business_id, 'inner') \
+                                    .drop(self.df_filter_id.business_id)
 
         self.df_yelp_rating = self.df_yelp_business \
-            .join(self.df_yelp_review, self.df_yelp_business.business_id == self.df_yelp_review.business_id) \
-            .drop(self.df_yelp_review.business_id)
+                                  .join(self.df_yelp_review, self.df_yelp_business.business_id
+                                        == self.df_yelp_review.business_id) \
+                                  .drop(self.df_yelp_review.business_id)
 
         self.df_yelp_filter_user = self.df_yelp_rating \
-            .groupby("user_id") \
-            .agg({"business_id": "count"}) \
-            .withColumnRenamed("count(business_id)", "ratings_count")
+                                        .groupby("user_id") \
+                                        .agg({"business_id": "count"}) \
+                                        .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-            .filter(self.df_yelp_filter_user.ratings_count >= 5)
+                                        .filter(self.df_yelp_filter_user.ratings_count >= 5)
         print("total number of users with more than 10 records is ", self.df_yelp_filter_user.count())
 
         self.df_yelp_filter_business = self.df_yelp_rating \
-            .groupby("business_id") \
-            .agg({"user_id": "count"}) \
-            .withColumnRenamed("count(user_id)", "ratings_count")
+                                            .groupby("business_id") \
+                                            .agg({"user_id": "count"}) \
+                                            .withColumnRenamed("count(user_id)", "ratings_count")
         self.df_yelp_filter_business = self.df_yelp_filter_business \
-            .filter(self.df_yelp_filter_business.ratings_count >= 1)
+                                            .filter(self.df_yelp_filter_business.ratings_count >= 1)
 
         self.df_yelp_rating_sample = self.df_yelp_rating \
-            .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id == self.df_yelp_filter_user.user_id, "inner") \
-            .drop(self.df_yelp_filter_user.user_id) \
-            .join(self.df_yelp_filter_business,
-                  self.df_yelp_rating.business_id == self.df_yelp_filter_business.business_id, "inner") \
-            .drop(self.df_yelp_filter_business.business_id) \
-            .select("business_id", "user_id", "ratings")
+                                        .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id
+                                              == self.df_yelp_filter_user.user_id, "inner") \
+                                        .drop(self.df_yelp_filter_user.user_id) \
+                                        .join(self.df_yelp_filter_business, self.df_yelp_rating.business_id
+                                              == self.df_yelp_filter_business.business_id, "inner") \
+                                        .drop(self.df_yelp_filter_business.business_id) \
+                                        .select("business_id", "user_id", "ratings")
 
-        #self.df_yelp_rating_sample = self.df_yelp_rating.select("business_id", "user_id", "ratings")
         self.user_indexer = StringIndexer(inputCol="user_id", outputCol="user_id_indexed", handleInvalid='error')
         self.user_index = self.user_indexer \
-            .fit(self.df_yelp_rating_sample.select("user_id")) \
-            .transform(self.df_yelp_rating_sample.select("user_id"))
-        self.df_yelp_rating_sample = self.df_yelp_rating_sample \
-            .join(self.user_index, self.df_yelp_rating_sample.user_id == self.user_index.user_id, "inner") \
-            .drop(self.user_index.user_id)
+                                .fit(self.df_yelp_rating_sample.select("user_id")) \
+                                .transform(self.df_yelp_rating_sample.select("user_id"))
 
+        self.df_yelp_rating_sample = self.df_yelp_rating_sample \
+                                        .join(self.user_index, self.df_yelp_rating_sample.user_id
+                                              == self.user_index.user_id, "inner") \
+                                        .drop(self.user_index.user_id)
         self.business_indexer = StringIndexer(inputCol="business_id", outputCol="business_id_indexed",
                                               handleInvalid='error')
         self.business_index = self.business_indexer \
-            .fit(self.df_yelp_rating_sample.select("business_id")) \
-            .transform(self.df_yelp_rating_sample.select("business_id"))
+                                    .fit(self.df_yelp_rating_sample.select("business_id")) \
+                                    .transform(self.df_yelp_rating_sample.select("business_id"))
         self.df_yelp_rating_sample = self.df_yelp_rating_sample \
-            .join(self.business_index, self.df_yelp_rating_sample.business_id == self.business_index.business_id,
-                  "inner") \
-            .drop(self.business_index.business_id)
+                                        .join(self.business_index, self.df_yelp_rating_sample.business_id
+                                              == self.business_index.business_id, "inner") \
+                                        .drop(self.business_index.business_id)
 
         self.df_yelp_rating_sample = self.df_yelp_rating_sample \
-            .withColumn("user_id_indexed", self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType())) \
-            .withColumn("business_id_indexed", self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
+                                        .withColumn("user_id_indexed",
+                                                self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType())) \
+                                        .withColumn("business_id_indexed",
+                                                self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
         self.df_yelp_rating_sample = self.df_yelp_rating_sample.rdd.repartition(48).toDF()
 
     def spark_recommendation_prediction(self):
@@ -142,12 +147,10 @@ class BatchMachineLearning:
                                   evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
                                   numFolds=3)
         cvModel = crossval.fit(self.df_training)
-        cvModel.write.save("sample-model")
         predictions = cvModel.transform(self.df_test)
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
         print("model's RMSE is ", rmse)
-        #rmse.write.save("rmse")
         self.df_results = cvModel.recommendForAllUsers(10)
 
 
