@@ -44,4 +44,13 @@ task1.doc_md = """\
 Spark Batch Processing Job is scheduled to start every other day
 """
 
+task2 = BashOperator(
+    task_id='run_batch_machine_learning_job',
+    bash_command='cd /home/ubuntu/Insight_Restaurant_Recommendation/src ; bash spark-batch-machine-learning-run.sh',
+    dag=dag)
+
+task2.doc_md = """\
+Spark Batch Machine Learning Job is scheduled to start every other day
+"""
+
 dag.doc_md = __doc__
