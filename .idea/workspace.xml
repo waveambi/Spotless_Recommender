@@ -13,21 +13,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="streamer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="streamer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="144" column="67" lean-forward="false" selection-start-line="144" selection-start-column="67" selection-end-line="144" selection-end-column="67" />
+            <state relative-caret-position="368">
+              <caret line="136" column="61" lean-forward="true" selection-start-line="136" selection-start-column="61" selection-end-line="136" selection-end-column="62" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="true">
+      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" column="30" lean-forward="false" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+              <caret line="8" column="17" lean-forward="true" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -576,18 +576,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
+    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="144" column="67" lean-forward="false" selection-start-line="144" selection-start-column="67" selection-end-line="144" selection-end-column="67" />
+        <state relative-caret-position="120">
+          <caret line="8" column="17" lean-forward="true" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
+    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="30" lean-forward="false" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+        <state relative-caret-position="368">
+          <caret line="136" column="61" lean-forward="true" selection-start-line="136" selection-start-column="61" selection-end-line="136" selection-end-column="62" />
           <folding />
         </state>
       </provider>
