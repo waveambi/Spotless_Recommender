@@ -142,8 +142,7 @@ class Streamer(SparkStreamerFromKafka):
 
         # save data
         config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
-        print(self.resDF.toDF().take(1))
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
         self.resDF.toDF().write \
             .format("jdbc") \
             .option("url", config["url"]) \
@@ -151,7 +150,7 @@ class Streamer(SparkStreamerFromKafka):
             .option("dbtable", config["dbtable_streaming"]) \
             .option("user", config["user"]) \
             .option("password", config["password"]) \
-            .mode(config["mode_streaming"]) \
+            .mode(config["mode_batch"]) \
             .option("numPartitions", config["nums_partition"]) \
             .save()
 
