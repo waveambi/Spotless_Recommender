@@ -139,6 +139,7 @@ class Streamer(SparkStreamerFromKafka):
         self.resDF = rdd.join(self.df_ranking_result)
         #.reduceByKey(lambda x,y: x+y)
         print(self.df_ranking_result.take(1))
+        print(self.rdd.take(1))
         if self.resDF.isEmpty():
             return
         print self.resDF.take(5)
