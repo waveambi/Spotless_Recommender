@@ -123,7 +123,7 @@ class BatchMachineLearning:
         self.df_yelp_rating_sample = self.df_yelp_rating_sample \
             .withColumn("user_id_indexed", self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType())) \
             .withColumn("business_id_indexed", self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
-
+        self.df_yelp_rating_sample = self.df_yelp_rating_sample.rdd.repartition(48).toDF()
 
     def spark_recommendation_prediction(self):
         """
