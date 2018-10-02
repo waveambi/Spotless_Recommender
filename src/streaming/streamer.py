@@ -95,7 +95,7 @@ class Streamer(SparkStreamerFromKafka):
             .option("user", config["user"]) \
             .option("password", config["password"]) \
             .load()
-'''
+        '''
         self.df_cf = self.spark.read \
             .format("jdbc") \
             .option("url", config["url"]) \
