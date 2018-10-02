@@ -106,7 +106,7 @@ class Streamer(SparkStreamerFromKafka):
             .load()
         '''
         # print("loaded batch with {} rows".format(self.df_ranking_result.count()))
-        self.df_ranking_result = self.df_ranking_result.select("business_id", "name", "address", "latitude_id", "longitude_id", "score")
+        self.df_ranking_result = self.df_ranking_result.select("business_id", "name", "latitude_id", "longitude_id", "score")
         self.df_ranking_result = (self.df_ranking_result.rdd.repartition(self.stream_config["PARTITIONS"])
                            .map(lambda x: x.asDict())
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
