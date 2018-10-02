@@ -138,11 +138,11 @@ class Streamer(SparkStreamerFromKafka):
         # and from all the spot suggestions select specific for the driver to ensure no competition
         self.resDF = rdd.join(self.df_ranking_result)
         #.reduceByKey(lambda x,y: x+y)
-        print("None")
+        print(self.df_ranking_result.take(1))
         if self.resDF.isEmpty():
             return
         print self.resDF.take(5)
-        print "None"
+        print "Not None"
         # save data
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_streaming", "dbtable_streaming", "nums_partition"]}
