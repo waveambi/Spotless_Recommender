@@ -130,13 +130,16 @@ class BatchProcessor:
         transform reviews with tokenization, normalization, lemmatization and sentiment dict
         calculate sentiment score and aggregate with business ID
         """
-        self.lemma_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
+        lemma_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
                                                   self.s3_config["TEXT_CORPUS_FOLDER"],
                                                   self.s3_config["LEMMA_FILE"])
-        self.sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
+        sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
                                                       self.s3_config["TEXT_CORPUS_FOLDER"],
                                                       self.s3_config["SENTIMENT_FILE"])
-
+        yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
+                                                         self.s3_config["YELP_FOLDER"],
+                                                         self.s3_config["YELP_BUSINESS_DATA_FILE"])
+        self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_yelp_review = self.df_yelp_review \
                                     .select("user_id", "business_id", "stars", "text") \
                                     .withColumnRenamed("stars", "ratings")
@@ -160,11 +163,11 @@ class BatchProcessor:
         lemmatizer = Lemmatizer() \
                     .setInputCols(["token"]) \
                     .setOutputCol("lemma") \
-                    .setDictionary(self.lemma_file, key_delimiter="->", value_delimiter="\t")
+                    .setDictionary(lemma_file, key_delimiter="->", value_delimiter="\t")
         sentiment_detector = SentimentDetector() \
                             .setInputCols(["lemma", "sentence"]) \
                             .setOutputCol("sentiment_score") \
-                            .setDictionary(self.sentiment_file, delimiter=",")
+                            .setDictionary(sentiment_file, delimiter=",")
         finisher = Finisher() \
                     .setInputCols(["sentiment_score"]) \
                     .setOutputCols(["sentiment"])
