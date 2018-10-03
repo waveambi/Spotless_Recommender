@@ -69,7 +69,7 @@ The PostgreSQL database sits on AWS RDS *Postgresql* instance.
 Configuration settings for Kafka, Streaming, PostgreSQL, AWS S3 bucket for the data are stored in the respective files in `config/` folder.
 > Replace the settings in `config/s3bucket.config.` with the names and paths for your S3 bucket.
 
-## Running TaxiOptimizer
+## Running Recommender
 
 ### Schedule the Batch Job
 Running `airflow/schedule.sh` on the master of *spark-cluster* will add the batch job to the scheduler. The batch job is set to execute every 24 hours, and it can be started and monitored from the Airflow GUI at `http://$SPARK_CLUSTER_0:8081`.
