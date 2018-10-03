@@ -25,6 +25,7 @@ class MyKafkaProducer(object):
         self.s3_config = helper.parse_config(s3_configfile)
         self.producer = KafkaProducer(bootstrap_servers=self.kafka_config["BROKERS_IP"])
 
+
     def get_key(self, msg):
         """
         produces key for message to Kafka topic
@@ -36,6 +37,7 @@ class MyKafkaProducer(object):
             return
         x, y = msgwithkey["latitude_id"], msgwithkey["longitude_id"]
         return str((x * 235 + y) % 3903865).encode()
+
 
     def produce_msgs(self):
         """

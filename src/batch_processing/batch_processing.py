@@ -4,11 +4,10 @@ sys.path.append("./helpers/")
 import helper
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, lit, to_date
+from pyspark.sql.functions import udf, lit, to_date, rank, col
 from pyspark.sql.types import IntegerType, StringType, FloatType, DateType
 from pyspark.sql import functions
 from pyspark.sql.window import Window
-from pyspark.sql.functions import rank, col
 from pyspark.ml import Pipeline
 from sparknlp.annotator import SentenceDetector, Tokenizer, Normalizer, Lemmatizer, SentimentDetector
 from sparknlp.base import DocumentAssembler, Finisher
@@ -19,6 +18,7 @@ class BatchProcessor:
     class that reads data from S3 bucket, prcoesses it with Spark
     and saves the results into PostgreSQL database
     """
+
 
     def __init__(self, s3_configfile, psql_configfile):
         """
@@ -33,6 +33,7 @@ class BatchProcessor:
         self.sc = SparkContext(conf=self.conf)
         self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()
         self.sc.setLogLevel("ERROR")
+
 
     def read_from_s3(self):
         """
@@ -56,6 +57,7 @@ class BatchProcessor:
         self.fuzzy_match_udf = udf(lambda x, y: helper.fuzzy_match(x, y), IntegerType())
         self.convert_sentiment_udf = udf(lambda x: helper.convert_sentiment(x), IntegerType())
         self.calculate_score_udf = udf(lambda x, y, z: helper.calculate_score(x, y, z), FloatType())
+
 
     def spark_ranking_transform(self):
         """
@@ -124,6 +126,7 @@ class BatchProcessor:
                                                              == self.df_yelp_business_slice.business_id), "inner") \
                                 .drop(self.df_ranking.business_id)
         self.df_ranking.cache()
+
 
     def spark_nlp_sentiment_analysis(self):
         """
@@ -194,6 +197,7 @@ class BatchProcessor:
                                 .agg({"sentiment": "mean"}) \
                                 .withColumnRenamed("avg(sentiment)", "avg_sentiment_score")
 
+
     def spark_create_block(self):
         """
         add unique id for latitude and logitude blocks
@@ -202,6 +206,7 @@ class BatchProcessor:
         self.determine_block_log_ids_udf = udf(lambda z: helper.determine_block_log_ids(z), IntegerType())
         self.df_ranking = self.df_ranking.withColumn("latitude_id", self.determine_block_lat_ids_udf("latitude"))
         self.df_ranking = self.df_ranking.withColumn("longitude_id", self.determine_block_log_ids_udf("longitude"))
+
 
     def spark_join_ranking_and_review(self):
         """
@@ -231,6 +236,7 @@ class BatchProcessor:
                     .select("*", rank().over(window).alias('rank')) \
                     .filter(col('rank') <= 10)
 
+
     def save_to_postgresql(self):
         """
         save batch processing results into PostgreSQL database
@@ -247,6 +253,7 @@ class BatchProcessor:
             .mode(config["mode_batch"]) \
             .option("numPartitions", config["nums_partition"]) \
             .save()
+
 
     def run(self):
         """

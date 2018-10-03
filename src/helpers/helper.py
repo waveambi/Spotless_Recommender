@@ -154,6 +154,7 @@ def fuzzy_match(s1, s2):
         ratio = fuzz.ratio(s1, s2)
         return ratio
 
+
 def convert_sentiment(s):
     """
     convert sentiment from positive/negative to numerical value 1/-1
@@ -182,8 +183,6 @@ def calculate_score(x, y, z):
     if x is not None and y is not None and z is not None:
         score = (x + y*0.2 + 1/(z+1)) / 3
         return score
-
-
 
 
 def determine_block_lat_ids(lat):

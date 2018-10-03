@@ -32,6 +32,7 @@ class SparkStreamerFromKafka:
         self.ssc = StreamingContext(self.sc, self.stream_config["INTERVAL"])
         self.sc.setLogLevel("ERROR")
 
+
     def initialize_stream(self):
         """
         initializes stream from Kafka topic
@@ -55,6 +56,7 @@ class SparkStreamerFromKafka:
                                            (x["latitude"], x["longitude"], x["user_id"]))))
         print("process_stream success")
 
+
     def run(self):
         """
         starts streaming
@@ -70,6 +72,7 @@ class Streamer(SparkStreamerFromKafka):
     class that provides each taxi driver with the top-n pickup spots
     """
 
+
     def __init__(self, kafka_configfile, stream_configfile, psql_configfile):
         """
         class constructor that initializes the instance according to the configurations
@@ -80,6 +83,7 @@ class Streamer(SparkStreamerFromKafka):
         """
         SparkStreamerFromKafka.__init__(self, kafka_configfile, stream_configfile, psql_configfile)
         self.load_batch_data()
+
 
     def load_batch_data(self):
         """

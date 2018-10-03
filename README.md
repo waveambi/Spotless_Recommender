@@ -11,8 +11,6 @@ Simulated user requests are generated with real-time location to **Recommender**
 
 > *Users could also receive top 5 best recommendation based on their food preference and dining history among the city.
 
-![alt text]()
-
 Nearby restaurant are defined as walking distance within 2 minutes and map are segmentated into 200m x 200m chunks of city street.
 
 Pipeline
