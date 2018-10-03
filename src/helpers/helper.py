@@ -53,9 +53,28 @@ def format_address(address):
     :rtype s      : str      formatted address only with street and number
     """
     if address is not None:
-        s = address.split(',')[0]
+        s = address.lower()
+        s = re.split(',', s)[0]
+        s = re.split("blvd|way|rd|pkwy|dr|ave|hwy|st|ct", s)[0]
         s = re.sub(r"\.", "", s)
-        return s.lower()
+        s = re.sub(r"-", "", s)
+        s = re.sub(r"&", "", s)
+        s = re.sub(r"/", "", s)
+        s_split = s.split()
+        if len(s_split) >= 4:
+            if s_split[2] == "las":
+                ss = s_split[0] + " " + s_split[2] + " " + s_split[3]
+            else:
+                ss = s_split[0] + " " + s_split[1] + " " + s_split[2]
+        else:
+            ss = s
+        #s = re.sub(r"\d+$", "", s)
+        #s = re.sub(r"-+$", "", s)
+        #s = re.sub(r"\d+$", "", s)
+        #s = re.sub(r" [ancls]+$", "", s)
+        #s = re.sub(r"#+$", "", s)
+        #s = re.sub(r"\d+$", "", s)
+        return ss.strip()
 
 
 def format_name(name):
@@ -71,27 +90,56 @@ def format_name(name):
         s = s.split("-")[-1].strip(" ").strip(",")
         s = re.sub(r"\s#[\S]+", "", s)
         s = re.sub(r"\s[0-9]+", "", s)
-        s = re.sub(r"\scompany", "", s)
+        s = re.sub(r"\s&", "", s)
+        s = re.sub(r"\sfashion", "", s)
+        s = re.sub(r"\sfashion", "", s)
+        s = re.sub(r"\sshow", "", s)
+        s = re.sub(r"\smeadows", "", s)
         s = re.sub(r"\srestaurant", "", s)
-        s = re.sub(r"\skitchen", "", s)
-        s = re.sub(r"\sbar", "", s)
-        s = re.sub(r"\sclub", "", s)
-        s = re.sub(r"\spub", "", s)
-        s = re.sub(r"\shotel", "", s)
-        s = re.sub(r"\sgrill", "", s)
-        s = re.sub(r"\sbbq", "", s)
-        s = re.sub(r"\sfood", "", s)
-        s = re.sub(r"\sshop", "", s)
-        s = re.sub(r"\sstore", "", s)
+        s = re.sub(r"\slv", "", s)
         s = re.sub(r"\scafe", "", s)
         s = re.sub(r"\scoffee", "", s)
-        s = re.sub(r"\splaza", "", s)
+        s = re.sub(r"\sbar", "", s)
+        s = re.sub(r"\smile", "", s)
+        s = re.sub(r"\smiracle", "", s)
         s = re.sub(r"\scenter", "", s)
-        s = re.sub(r"\slas vegas", "", s)
+        s = re.sub(r"\small", "", s)
+        s = re.sub(r"\sgrill", "", s)
+        s = re.sub(r"\sand", "", s)
+        s = re.sub(r"\shotel", "", s)
+        s = re.sub(r"\soutlet", "", s)
+        s = re.sub(r"\spizza", "", s)
+        s = re.sub(r"\scasino", "", s)
+        s = re.sub(r"\skitchen", "", s)
+        s = re.sub(r"\scanal", "", s)
+        s = re.sub(r"\slas", "", s)
+        s = re.sub(r"\svegas", "", s)
+        s = re.sub(r"\shouse", "", s)
+        s = re.sub(r"\sfood", "", s)
+        s = re.sub(r"\sllc", "", s)
+        s = re.sub(r"\sexpress", "", s)
+        s = re.sub(r"\sshops", "", s)
+        s = re.sub(r"\sshop", "", s)
+        s = re.sub(r"\shouse", "", s)
+        s = re.sub(r"\sgrand", "", s)
+        s = re.sub(r"\slounge", "", s)
+        s = re.sub(r"\smarket", "", s)
+        s = re.sub(r"\scuisine", "", s)
+        s = re.sub(r"\sairport", "", s)
+        s = re.sub(r"\sdeli", "", s)
+        s = re.sub(r"\ssushi", "", s)
+        s = re.sub(r"\sbakery", "", s)
+        s = re.sub(r"\scompany", "", s)
+        s = re.sub(r"\sclub", "", s)
+        s = re.sub(r"\spub", "", s)
+        s = re.sub(r"\sbbq", "", s)
+        s = re.sub(r"\sstore", "", s)
+        s = re.sub(r"\splaza", "", s)
+        s = re.sub(r"\splazzo", "", s)
         s = re.sub(r"\sinc", "", s)
         s = re.sub(r"\sthe", "", s)
-        s = s.lower().strip(" ")
-        return s
+        #s = re.sub(r" ", "", s)
+        return s.strip()
 
 
 def fuzzy_match(s1, s2):

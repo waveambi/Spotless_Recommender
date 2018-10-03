@@ -4,8 +4,8 @@ sys.path.append("./helpers/")
 import helper
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf
-from pyspark.sql.types import IntegerType, StringType, FloatType
+from pyspark.sql.functions import udf, lit, to_date
+from pyspark.sql.types import IntegerType, StringType, FloatType, DateType
 from pyspark.sql import functions
 from pyspark.sql.window import Window
 from pyspark.sql.functions import rank, col
@@ -77,12 +77,30 @@ class BatchProcessor:
         self.df_yelp_business = self.df_yelp_business \
                                     .filter(self.df_yelp_business.city == "Las Vegas") \
                                     .select("business_id", "name", "address", "city", "postal_code",
-                                                "latitude", "longitude", "stars", "review_count") \
+                                                "latitude", "longitude", "stars", "review_count", "categories") \
                                     .dropna()
         self.df_yelp_business = self.df_yelp_business \
                                     .withColumn("formatted_address", self.format_address_udf("address"))
         self.df_yelp_business = self.df_yelp_business \
                                     .withColumn("formatted_name", self.format_name_udf("name"))
+        self.df_temp = self.df_yelp_business \
+                            .join(self.df_yelp_review, self.df_yelp_business.business_id
+                                  == self.df_yelp_review.business_id, "inner") \
+                            .drop(self.df_yelp_review.business_id) \
+                            .drop(self.df_yelp_review.stars)
+        self.df_temp = self.df_temp.withColumn('date_formatted', self.df_temp.date.cast(DateType()))
+        self.df_temp = self.df_temp.where(self.df_temp.date_formatted > to_date(lit("2010-01-01")).cast(DateType()))
+        self.df_temp = self.df_temp \
+                            .select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude",
+                                 "stars", "review_count", "categories", "formatted_address", "formatted_name") \
+                            .dropDuplicates()
+        self.df_temp = self.df_temp.where(functions.isnotnull(functions.col("address")))
+        self.df_temp = self.df_temp.filter(self.df_temp.categories.like("%Restaurant%"))
+        self.df_temp = self.df_temp.filter(self.df_temp.formatted_address.rlike("^[0-9]([\w\s]*?)"))
+        self.df_temp = self.df_temp.withColumn("formatted_address", self.format_address_udf("address"))
+        self.df_temp = self.df_temp.withColumn("formatted_name", self.format_name_udf("name"))
+        self.df_temp.cache()
+        print("Total number of yelp restaurant is ", self.df_temp.count())
         self.df_joined = self.df_yelp_business \
                             .join(self.df_sanitary_summary, (self.df_yelp_business.formatted_address
                                                              == self.df_sanitary_summary.Formatted_Address) \
@@ -94,6 +112,7 @@ class BatchProcessor:
                                 .filter(self.df_joined.ratio >= 60) \
                                 .select("business_id", "name", "address", "latitude",
                                             "longitude", "stars", "Avg_Inspection_Demerits")
+        print("Match number of yelp restaurant is ", self.df_ranking.count())
         self.df_ranking = self.df_ranking \
                                 .groupby("business_id") \
                                 .agg({"Avg_Inspection_Demerits": "mean"}) \
