@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" afterPath="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" afterPath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config/postgresql.config" afterPath="$PROJECT_DIR$/src/config/postgresql.config" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/helpers/helper.py" afterPath="$PROJECT_DIR$/src/helpers/helper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/kafka/kafka_producer.py" afterPath="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/streaming/streamer.py" afterPath="$PROJECT_DIR$/src/streaming/streamer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config/streaming.config" afterPath="$PROJECT_DIR$/src/config/streaming.config" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,21 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
+      <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="229">
-              <caret line="27" column="37" lean-forward="false" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="85" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+            <state relative-caret-position="3764">
+              <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -42,68 +28,18 @@
       <file leaf-file-name="streaming.config" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/config/streaming.config">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
+            <state relative-caret-position="15">
+              <caret line="1" column="19" lean-forward="false" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="batch_processing.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="helper.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kafka_producer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main_streaming.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/streaming/main_streaming.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="10" column="20" lean-forward="true" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="streamer.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="130" column="0" lean-forward="true" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1455">
-              <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+            <state relative-caret-position="249">
+              <caret line="138" column="28" lean-forward="true" selection-start-line="138" selection-start-column="28" selection-end-line="138" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -125,6 +61,7 @@
       <find>collect</find>
       <find>df_city_filter</find>
       <find>df_batch</find>
+      <find>cache</find>
     </findStrings>
     <replaceStrings>
       <replace>sanitary</replace>
@@ -155,17 +92,17 @@
         <option value="$PROJECT_DIR$/src/kafka-run.sh" />
         <option value="$PROJECT_DIR$/src/config/kafka.config" />
         <option value="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
-        <option value="$PROJECT_DIR$/src/config/streaming.config" />
         <option value="$PROJECT_DIR$/src/requests_simulator/requests_simulator.py" />
         <option value="$PROJECT_DIR$/src/streaming_simulator/requests_simulator.py" />
-        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
         <option value="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/config/postgresql.config" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
         <option value="$PROJECT_DIR$/src/helpers/helper.py" />
         <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
         <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
+        <option value="$PROJECT_DIR$/src/config/postgresql.config" />
+        <option value="$PROJECT_DIR$/src/config/streaming.config" />
+        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
       </list>
     </option>
   </component>
@@ -702,38 +639,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/streaming.config">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1455">
-          <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -742,10 +647,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
+    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+        <state relative-caret-position="75">
+          <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="32" column="33" lean-forward="true" selection-start-line="32" selection-start-column="33" selection-end-line="32" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -758,10 +671,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/streaming/streamer.py">
+    <entry file="file://$PROJECT_DIR$/src/kafka/kafka_producer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="130" column="0" lean-forward="true" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+        <state relative-caret-position="190">
+          <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3764">
+          <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/config/streaming.config">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="19" lean-forward="false" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="138" column="28" lean-forward="true" selection-start-line="138" selection-start-column="28" selection-end-line="138" selection-end-column="28" />
           <folding />
         </state>
       </provider>

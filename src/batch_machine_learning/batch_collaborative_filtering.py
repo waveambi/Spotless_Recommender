@@ -86,7 +86,7 @@ class BatchMachineLearning:
                                         .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
                                         .filter(self.df_yelp_filter_user.ratings_count >= 5)
-        print("total number of users with more than 10 records is ", self.df_yelp_filter_user.count())
+        print("total number of users with more than 5 records is ", self.df_yelp_filter_user.count())
 
         self.df_yelp_filter_business = self.df_yelp_rating \
                                             .groupby("business_id") \
@@ -128,13 +128,15 @@ class BatchMachineLearning:
                                                 self.df_yelp_rating_sample["user_id_indexed"].cast(IntegerType())) \
                                         .withColumn("business_id_indexed",
                                                 self.df_yelp_rating_sample["business_id_indexed"].cast(IntegerType()))
-        self.df_yelp_rating_sample = self.df_yelp_rating_sample.rdd.repartition(48).toDF()
+        #self.df_yelp_rating_sample = self.df_yelp_rating_sample.rdd.repartition(48).toDF()
 
     def spark_recommendation_prediction(self):
         """
         calculates restaurant recommendation and ranks with ALS Matrix Factorization
         """
         self.df_training, self.df_test = self.df_yelp_rating_sample.randomSplit([0.8, 0.2])
+        self.df_training.cache()
+        self.df_test.cache()
         als = ALS(maxIter=5, coldStartStrategy="drop", userCol='user_id_indexed', itemCol='business_id_indexed',
                   ratingCol='ratings')
 
