@@ -1,10 +1,98 @@
-# Clean Restaurant Recommendation
-> ***Get Clean Food***
+# Spotless Restaurant Recommender
+> ***Real-Time Nearby Sanitary Food Recommendation***
 
 This is a project I completed during the Insight Data Engineering program (New York, Fall 2018).
 
 ***
 
-This project is for optimizing Yelp rating combining with sanitory inspection results, to deliver a better nearby restaurant recommendation
+This project is for clean food recommendation with Yelp ratings, reviews sentiments and sanitory inspection results released by goverment, to deliver a better restaurant recommendation near users.
 
-***
+Simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendation.*
+
+> *Users could also receive top 5 best recommendation based on their food preference and dining history among the city.
+
+![alt text](https://github.com/AndreyBozhko/TaxiOptimizer/blob/master/docs/map.jpg "TaxiOptimizer Screenshot")
+
+Nearby restaurant are defined as
+
+
+
+
+
+
+I define the top pickup spots within each neighborhood for any given 10-minute interval of the day as ~5m x 5m chunks of city streets with the most number of previous taxi rides from those spots, based on the historical data.
+
+
+
+Pipeline
+-----------------
+
+![alt text](https://github.com/AndreyBozhko/TaxiOptimizer/blob/master/docs/pipeline.jpg "TaxiOptimizer Pipeline")
+
+***Batch Job***: historical taxi trip data are ingested from S3 bucket into Spark, which computes top-n pickup locations within every cell of the grid for every 10-minute interval, and saves the result into the PostgreSQL database.
+> This process is automated with the help of the Airflow scheduler.
+
+***Streaming Job***: real-time taxi location data are streamed by Kafka into Spark Streaming, where the stream is joined with the results of the batch job to produce the answers for every entry in the stream.
+
+### Data Sources
+  1. Historical: [NYC TLC Taxi Trip data](http://www.nyc.gov/html/tlc/html/about/trip_record_data.shtml), for period from Jan 2009 to Jun 2016 (~550 GB in total after generating additional data with `generate_raw_data/generator_run.sh`),
+
+  2. Streaming: [MTA Bus Time historical data](http://web.mta.info/developers/MTA-Bus-Time-historical-data.html), which is treated as if the bus location data were the real-time taxi location data (streamed at ~1,000 records/s).
+
+
+### Environment Setup
+
+Install and configure [AWS CLI](https://aws.amazon.com/cli/) and [Pegasus](https://github.com/InsightDataScience/pegasus) on your local machine, and clone this repository using
+`git clone https://github.com/AndreyBozhko/TaxiOptimizer`.
+
+> AWS Tip: Add your local IP to your AWS VPC inbound rules
+
+> Pegasus Tip: In $PEGASUS_HOME/install/download_tech, change Zookeeper version to 3.4.12, and follow the notes in docs/pegasus_setup.odt to configure Pegasus
+
+#### CLUSTER STRUCTURE:
+
+To reproduce my environment, 11 m4.large AWS EC2 instances are needed:
+
+- (4 nodes) Spark Cluster - Batch
+- (3 nodes) Spark Cluster - Stream
+- (3 nodes) Kafka Cluster
+- Flask Node
+
+To create the clusters, put the appropriate `master.yml` and `workers.yml` files in each `cluster_setup/<clustername>` folder (following the template in `cluster_setup/dummy.yml.template`), list all the necesary software in `cluster_setup/<clustername>/install.sh`, and run the `cluster_setup/create-clusters.sh` script.
+
+> After that, **TaxiOptimizer** will be cloned to the clusters (with necessary .jar files downloaded and required Python packages installed), and any node's address from cluster *some-cluster-name* will be saved as the environment variable SOME_CLUSTER_NAME_$i on every master, where $i = 0, 1, 2, ...*
+
+
+##### Airflow setup
+
+The Apache Airflow scheduler can be installed on the master node of *spark-batch-cluster*. Follow the instructions in `docs/airflow_install.txt` to launch the Airflow server.
+
+
+##### PostgreSQL setup
+The PostgreSQL database sits on the master node of *spark-stream-cluster*.
+Follow the instructions in `docs/postgres_install.txt` to download and setup access to it.
+
+##### Configurations
+Configuration settings for Kafka, PostgreSQL, AWS S3 bucket, as well as the schemas for the data are stored in the respective files in `config/` folder.
+> Replace the settings in `config/s3config.ini` with the names and paths for your S3 bucket.
+
+
+## Running TaxiOptimizer
+
+### Schedule the Batch Job
+Running `airflow/schedule.sh` on the master of *spark-batch-cluster* will add the batch job to the scheduler. The batch job is set to execute every 24 hours, and it can be started and monitored from the Airflow GUI at `http://$SPARK_BATCH_CLUSTER_0:8081`.
+
+### Start the Streaming Job
+Execute `./spark-run.sh --stream` on the master of *spark-stream-cluster* (preferably after the batch job has run for the first time).
+
+### Start streaming messages with Kafka
+Execute `./kafka-run --produce` on the master of *kafka-cluster* to start streaming the real-time taxi location data.
+If the topic does not exist, run `./kafka-run --create`. To describe existing topic, run `./kafka-run --describe`.
+It is also possible to delete inactive topic using the option `--delete`, or view the messages in the topic with the option `--console-consume`.
+
+### Flask
+Create the file `config/GoogleAPIKey.config` with your Google Maps API key, and run `flask/run.sh` to start the Flask server.
+
+
+### Testing
+The folder `test/` contains unit tests for various project components.
