@@ -94,7 +94,6 @@ class BatchProcessor:
                             .select("business_id", "name", "address", "city", "postal_code", "latitude", "longitude",
                                  "stars", "review_count", "categories", "formatted_address", "formatted_name") \
                             .dropDuplicates()
-        self.df_temp = self.df_temp.where(functions.isnotnull(functions.col("address")))
         self.df_temp = self.df_temp.filter(self.df_temp.categories.like("%Restaurant%"))
         self.df_temp = self.df_temp.filter(self.df_temp.formatted_address.rlike("^[0-9]([\w\s]*?)"))
         self.df_temp = self.df_temp.withColumn("formatted_address", self.format_address_udf("address"))
