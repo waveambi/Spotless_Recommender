@@ -194,7 +194,7 @@ def determine_block_lat_ids(lat):
     :rtype block_id_lat : int  latitude id
     """
     corner = float(lat) - 35.98 # lat range from 35.98 to 36.31
-    block_id_lat = int(math.floor(corner / 0.001))
+    block_id_lat = int(math.floor(corner / 0.003))
     return block_id_lat
 
 
@@ -206,7 +206,7 @@ def determine_block_log_ids(log):
     :rtype block_id_log : int  logitude id
     """
     corner = float(log) + 115.65 #log range from -115.65 to -115.04
-    block_id_log = int(math.floor(corner / 0.001))
+    block_id_log = int(math.floor(corner / 0.003))
     return block_id_log
 
 

@@ -5,7 +5,7 @@ This is a project I completed during the Insight Data Engineering program (New Y
 
 ***
 
-This project is for clean food recommendation with Yelp ratings, reviews sentiments and sanitory inspection results released by goverment, to deliver a better restaurant recommendation near users.
+This project is for clean food recommendation with Yelp ratings, reviews sentiments and sanitary inspection results released by goverment, to deliver a better restaurant recommendation near users.
 
 Simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendation.*
 
@@ -13,19 +13,18 @@ Simulated user requests are generated with real-time location to **Recommender**
 
 ![alt text](https://github.com/AndreyBozhko/TaxiOptimizer/blob/master/docs/map.jpg "TaxiOptimizer Screenshot")
 
-Nearby restaurant are defined as
-
-
-
-
-
-
-I define the top pickup spots within each neighborhood for any given 10-minute interval of the day as ~5m x 5m chunks of city streets with the most number of previous taxi rides from those spots, based on the historical data.
-
-
+Nearby restaurant are defined as walking distance within 2 minutes and map are segmentated into 200m x 200m chunks of city street.
 
 Pipeline
+
 -----------------
+
+
+
+
+
+
+
 
 ![alt text](https://github.com/AndreyBozhko/TaxiOptimizer/blob/master/docs/pipeline.jpg "TaxiOptimizer Pipeline")
 
