@@ -136,9 +136,9 @@ class BatchProcessor:
         sentiment_file = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
                                                       self.s3_config["TEXT_CORPUS_FOLDER"],
                                                       self.s3_config["SENTIMENT_FILE"])
-        yelp_business_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
-                                                         self.s3_config["YELP_FOLDER"],
-                                                         self.s3_config["YELP_BUSINESS_DATA_FILE"])
+        yelp_rating_filename = "s3a://{}/{}/{}".format(self.s3_config["BUCKET"],
+                                                       self.s3_config["YELP_FOLDER"],
+                                                       self.s3_config["YELP_REVIEW_DATA_FILE"])
         self.df_yelp_review = self.spark.read.json(yelp_rating_filename)
         self.df_yelp_review = self.df_yelp_review \
                                     .select("user_id", "business_id", "stars", "text") \
