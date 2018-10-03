@@ -11,7 +11,7 @@ Simulated user requests are generated with real-time location to **Recommender**
 
 > *Users could also receive top 5 best recommendation based on their food preference and dining history among the city.
 
-![alt text](https://github.com/AndreyBozhko/TaxiOptimizer/blob/master/docs/map.jpg "TaxiOptimizer Screenshot")
+![alt text]()
 
 Nearby restaurant are defined as walking distance within 2 minutes and map are segmentated into 200m x 200m chunks of city street.
 
@@ -19,7 +19,7 @@ Pipeline
 
 -----------------
 
-![alt text](https://github.com/waveambi/Insight_Recommendation/Pipeline.jpg "Recommender Pipeline")
+![alt text](https://github.com/waveambi/Insight_Recommendation/blob/master/Pipeline.jpg "Recommender Pipeline")
 
 ***Batch Job***: download yelp ratings and reviews from Kaggle and sanitary inspections data from OpenData. Those are ingested from S3 bucket into Spark, which computes top-n nearby recommendation within every district of the grid, and results are writed into the AWS RDS Postgresql database.
 > This process is scheduled and automated with Airflow.
