@@ -149,8 +149,8 @@ class BatchMachineLearning:
                                   estimatorParamMaps=param,
                                   evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
                                   numFolds=2)
-        cvModel = crossval.fit(self.df_training)
-        predictions = cvModel.transform(self.df_test)
+        cvModel = crossval.fit(self.df_training.rdd)
+        predictions = cvModel.transform(self.df_test.rdd)
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
         print("model's RMSE is ", rmse)
