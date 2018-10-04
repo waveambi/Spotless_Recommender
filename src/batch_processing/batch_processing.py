@@ -234,7 +234,7 @@ class BatchProcessor:
                     .select("latitude_id", "longitude_id", "business_id", "name",
                             "address", "latitude", "longitude", "score") \
                     .select("*", rank().over(window).alias('rank')) \
-                    .filter(col('rank') <= 10)
+                    .filter(col('rank') <= 5)
 
 
     def save_to_postgresql(self):
