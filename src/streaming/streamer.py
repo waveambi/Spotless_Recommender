@@ -8,7 +8,7 @@ from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
-
+from pyspark.sql.types import StructType, StructField, StringType
 
 class SparkStreamerFromKafka:
     """
@@ -104,6 +104,8 @@ class Streamer(SparkStreamerFromKafka):
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["score"]))))
         self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
+        self.columns = ["latitude_id", "longitude_id", "latitude", "longitude", "user_id", "business_id", "name", "address", "score"]
+        self.schema = StructType([StructField(i, StringType(), True) for i in range(self.columns)])
         print("load batch data successfully")
 
 
@@ -126,10 +128,10 @@ class Streamer(SparkStreamerFromKafka):
         self.resDF = rdd.join(self.df_ranking_result)
         if self.resDF.isEmpty():
             return
-        print(self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3])).toDF().take(5))
+        print(self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3])))
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
-        self.resDF.toDF().write \
+        self.sc.createDataFrame(self.resDF, self.schema).write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
