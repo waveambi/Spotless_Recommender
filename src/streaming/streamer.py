@@ -131,16 +131,18 @@ class Streamer(SparkStreamerFromKafka):
         print(self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3])).take(5))
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
-        self.spark.createDataFrame(self.resDF, self.schema).write \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config["dbtable_streaming"]) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .mode(config["mode_batch"]) \
-            .option("numPartitions", config["nums_partition"]) \
-            .save()
+        self.df_save = self.spark.createDataFrame(self.resDF, self.schema)
+        if len(self.df_save.columns) == 9:
+            self.df_save.write \
+                .format("jdbc") \
+                .option("url", config["url"]) \
+                .option("driver", config["driver"]) \
+                .option("dbtable", config["dbtable_streaming"]) \
+                .option("user", config["user"]) \
+                .option("password", config["password"]) \
+                .mode(config["mode_batch"]) \
+                .option("numPartitions", config["nums_partition"]) \
+                .save()
 
 
 
