@@ -104,8 +104,6 @@ class Streamer(SparkStreamerFromKafka):
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["score"]))))
         self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
-        columns = ["latitude_id", "longitude_id", "latitude", "longitude", "user_id", "business_id", "name", "address", "score"]
-        self.schema = StructType([StructField(i, StringType(), True) for i in columns])
         print("load batch data successfully")
 
 
@@ -128,21 +126,19 @@ class Streamer(SparkStreamerFromKafka):
         self.resDF = rdd.join(self.df_ranking_result)
         if self.resDF.isEmpty():
             return
-        print(self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3])).take(5))
+        print(self.resDF.take(5))
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
-        self.df_save = self.spark.createDataFrame(self.resDF, self.schema)
-        if len(self.df_save.columns) == 9:
-            self.df_save.write \
-                .format("jdbc") \
-                .option("url", config["url"]) \
-                .option("driver", config["driver"]) \
-                .option("dbtable", config["dbtable_streaming"]) \
-                .option("user", config["user"]) \
-                .option("password", config["password"]) \
-                .mode(config["mode_batch"]) \
-                .option("numPartitions", config["nums_partition"]) \
-                .save()
+        self.resDF.toDF().write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_streaming"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
 
 
 
