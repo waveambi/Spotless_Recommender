@@ -3,7 +3,7 @@
 S3CONFIGFILE=$PWD/config/s3bucket.config
 KAFKACONFIGFILE=$PWD/config/kafka.config
 
-TOPIC="topic1"
+TOPIC="topic456"
 NUM_PARTITIONS=3
 REPL_FACTOR=2
 RETENTION=3600000
