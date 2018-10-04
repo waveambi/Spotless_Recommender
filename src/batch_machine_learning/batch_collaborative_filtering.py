@@ -5,11 +5,14 @@ import helper
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.types import IntegerType, StringType
+from pyspark.sql.window import Window
+from pyspark.sql.functions import lit, rank, col
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.recommendation import ALS
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
+
 
 
 class BatchMachineLearning:
@@ -88,20 +91,6 @@ class BatchMachineLearning:
                                         .filter(self.df_yelp_filter_user.ratings_count >= 5)
         print("total number of users with more than 5 records is ", self.df_yelp_filter_user.count())
 
-        config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_id", "nums_partition"]}
-        self.df_yelp_filter_user.select("user_id").write \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config["dbtable_id"]) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .mode(config["mode_batch"]) \
-            .option("numPartitions", config["nums_partition"]) \
-            .save()
-
-
         self.df_yelp_filter_business = self.df_yelp_rating \
                                             .groupby("business_id") \
                                             .agg({"user_id": "count"}) \
@@ -118,6 +107,31 @@ class BatchMachineLearning:
                                               == self.df_yelp_filter_business.business_id, "inner") \
                                         .drop(self.df_yelp_filter_business.business_id) \
                                         .select("business_id", "user_id", "ratings")
+
+
+
+        column_list = ["user_id"]
+        window = Window.partitionBy([col(x) for x in column_list]) \
+                        .orderBy(self.df_yelp_rating_sample['ratings'].desc())
+        self.df_yelp_rating_sample = self.df_yelp_rating_sample \
+                    .select("user_id", "business_id", "ratings") \
+                    .select("*", rank().over(window).alias('rank')) \
+                    .filter(col('rank') <= 5)
+        config = {key: self.psql_config[key] for key in
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_cf", "nums_partition"]}
+        self.df_yelp_rating_sample.write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_cf"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
+        print("success in creating user recommend")
+
+
 
         self.user_indexer = StringIndexer(inputCol="user_id", outputCol="user_id_indexed", handleInvalid='error')
         self.user_index = self.user_indexer \
