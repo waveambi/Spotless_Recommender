@@ -131,7 +131,7 @@ class Streamer(SparkStreamerFromKafka):
         print(self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3])).take(5))
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
-        self.sc.createDataFrame(self.resDF, self.schema).write \
+        self.spark.createDataFrame(self.resDF, self.schema).write \
             .format("jdbc") \
             .option("url", config["url"]) \
             .option("driver", config["driver"]) \
