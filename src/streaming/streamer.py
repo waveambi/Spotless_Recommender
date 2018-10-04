@@ -104,8 +104,8 @@ class Streamer(SparkStreamerFromKafka):
                            .map(lambda x: ((x["latitude_id"], x["longitude_id"]),
                                            (x["business_id"], x["name"], x["address"], x["score"]))))
         self.df_ranking_result.persist(pyspark.StorageLevel.MEMORY_ONLY_2)
-        self.columns = ["latitude_id", "longitude_id", "latitude", "longitude", "user_id", "business_id", "name", "address", "score"]
-        self.schema = StructType([StructField(i, StringType(), True) for i in range(self.columns)])
+        columns = ["latitude_id", "longitude_id", "latitude", "longitude", "user_id", "business_id", "name", "address", "score"]
+        self.schema = StructType([StructField(i, StringType(), True) for i in columns])
         print("load batch data successfully")
 
 
