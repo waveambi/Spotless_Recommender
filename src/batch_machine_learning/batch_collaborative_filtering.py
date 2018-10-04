@@ -85,16 +85,30 @@ class BatchMachineLearning:
                                         .agg({"business_id": "count"}) \
                                         .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-                                        .filter(self.df_yelp_filter_user.ratings_count >= 100)
-        print("total number of users with more than 100 records is ", self.df_yelp_filter_user.count())
+                                        .filter(self.df_yelp_filter_user.ratings_count >= 5)
+        print("total number of users with more than 5 records is ", self.df_yelp_filter_user.count())
+
+        config = {key: self.psql_config[key] for key in
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_id", "nums_partition"]}
+        self.df_yelp_filter_user.select("user_id").write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_id"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
+
 
         self.df_yelp_filter_business = self.df_yelp_rating \
                                             .groupby("business_id") \
                                             .agg({"user_id": "count"}) \
                                             .withColumnRenamed("count(user_id)", "ratings_count")
         self.df_yelp_filter_business = self.df_yelp_filter_business \
-                                            .filter(self.df_yelp_filter_business.ratings_count >= 100)
-        print("total number of restaurants with more than 100 users is ", self.df_yelp_filter_business.count())
+                                            .filter(self.df_yelp_filter_business.ratings_count >= 1)
+        print("total number of restaurants with more than 1 users is ", self.df_yelp_filter_business.count())
 
         self.df_yelp_rating_sample = self.df_yelp_rating \
                                         .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id
@@ -162,7 +176,7 @@ class BatchMachineLearning:
         save batch processing results into PostgreSQL database and adds necessary index
         """
         config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_id", "nums_partition"]}
         self.df_results.write \
             .format("jdbc") \
             .option("url", config["url"]) \
@@ -174,6 +188,16 @@ class BatchMachineLearning:
             .option("numPartitions", config["nums_partition"]) \
             .save()
 
+        self.df_yelp_filter_user.select("user_id").write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_id"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
 
     def run(self):
         """

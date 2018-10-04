@@ -129,6 +129,7 @@ class Streamer(SparkStreamerFromKafka):
         print(self.resDF.take(5))
 
 
+
     def process_stream(self):
         """
         processes each RDD in the stream
