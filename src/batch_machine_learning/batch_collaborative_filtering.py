@@ -138,19 +138,19 @@ class BatchMachineLearning:
         self.df_training, self.df_test = self.df_yelp_rating_sample.randomSplit([0.8, 0.2])
         self.df_training.cache()
         self.df_test.cache()
-        als = ALS(maxIter=5, coldStartStrategy="drop", userCol='user_id_indexed', itemCol='business_id_indexed',
+        als = ALS(maxIter=5, rank=10, coldStartStrategy="drop", userCol='user_id_indexed', itemCol='business_id_indexed',
                   ratingCol='ratings')
 
-        pipeline = Pipeline(stages=[als])
-        param = ParamGridBuilder() \
-            .addGrid(als.rank, [5, 10]) \
-            .build()
-        crossval = CrossValidator(estimator=pipeline,
-                                  estimatorParamMaps=param,
-                                  evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
-                                  numFolds=2)
-        cvModel = crossval.fit(self.df_training.rdd)
-        predictions = cvModel.transform(self.df_test.rdd)
+        #pipeline = Pipeline(stages=[als])
+        #param = ParamGridBuilder() \
+        #    .addGrid(als.rank, [5, 10]) \
+        #    .build()
+        #crossval = CrossValidator(estimator=pipeline,
+        #                          estimatorParamMaps=param,
+        #                          evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
+        #                          numFolds=2)
+        cvModel = als.fit(self.df_training)
+        predictions = cvModel.transform(self.df_test)
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')
         rmse = evaluator.evaluate(predictions)
         print("model's RMSE is ", rmse)
