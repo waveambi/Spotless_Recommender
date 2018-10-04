@@ -85,15 +85,16 @@ class BatchMachineLearning:
                                         .agg({"business_id": "count"}) \
                                         .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-                                        .filter(self.df_yelp_filter_user.ratings_count >= 5)
-        print("total number of users with more than 5 records is ", self.df_yelp_filter_user.count())
+                                        .filter(self.df_yelp_filter_user.ratings_count >= 100)
+        print("total number of users with more than 100 records is ", self.df_yelp_filter_user.count())
 
         self.df_yelp_filter_business = self.df_yelp_rating \
                                             .groupby("business_id") \
                                             .agg({"user_id": "count"}) \
                                             .withColumnRenamed("count(user_id)", "ratings_count")
         self.df_yelp_filter_business = self.df_yelp_filter_business \
-                                            .filter(self.df_yelp_filter_business.ratings_count >= 1)
+                                            .filter(self.df_yelp_filter_business.ratings_count >= 100)
+        print("total number of restaurants with more than 100 users is ", self.df_yelp_filter_business.count())
 
         self.df_yelp_rating_sample = self.df_yelp_rating \
                                         .join(self.df_yelp_filter_user, self.df_yelp_rating.user_id
@@ -147,7 +148,7 @@ class BatchMachineLearning:
         crossval = CrossValidator(estimator=pipeline,
                                   estimatorParamMaps=param,
                                   evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
-                                  numFolds=3)
+                                  numFolds=2)
         cvModel = crossval.fit(self.df_training)
         predictions = cvModel.transform(self.df_test)
         evaluator = RegressionEvaluator(metricName='rmse', labelCol='rating')

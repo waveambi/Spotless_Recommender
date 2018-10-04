@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config/postgresql.config" afterPath="$PROJECT_DIR$/src/config/postgresql.config" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" afterPath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,7 +33,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="true">
+      <file leaf-file-name="postgresql.config" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
@@ -43,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="138" column="28" lean-forward="true" selection-start-line="138" selection-start-column="28" selection-end-line="138" selection-end-column="28" />
+            <state relative-caret-position="496">
+              <caret line="98" column="58" lean-forward="true" selection-start-line="98" selection-start-column="58" selection-end-line="98" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -109,8 +109,8 @@
         <option value="$PROJECT_DIR$/src/kafka/kafka_producer.py" />
         <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
         <option value="$PROJECT_DIR$/src/config/streaming.config" />
-        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
         <option value="$PROJECT_DIR$/src/config/postgresql.config" />
+        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
       </list>
     </option>
   </component>
@@ -679,18 +679,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
+    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3764">
-          <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="138" column="28" lean-forward="true" selection-start-line="138" selection-start-column="28" selection-end-line="138" selection-end-column="28" />
+        <state relative-caret-position="75">
+          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -703,10 +695,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/config/postgresql.config">
+    <entry file="file://$PROJECT_DIR$/src/batch_processing/batch_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+        <state relative-caret-position="3764">
+          <caret line="256" column="0" lean-forward="false" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="98" column="58" lean-forward="true" selection-start-line="98" selection-start-column="58" selection-end-line="98" selection-end-column="58" />
           <folding />
         </state>
       </provider>
