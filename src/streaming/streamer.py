@@ -126,7 +126,7 @@ class Streamer(SparkStreamerFromKafka):
         self.resDF = rdd.join(self.df_ranking_result)
         if self.resDF.isEmpty():
             return
-        print(self.resDF.take(5))
+        print(self.resDF.take(5).toDF)
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
         self.resDF.toDF.write \
