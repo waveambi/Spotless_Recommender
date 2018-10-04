@@ -127,6 +127,18 @@ class Streamer(SparkStreamerFromKafka):
         if self.resDF.isEmpty():
             return
         print(self.resDF.take(5))
+        config = {key: self.psql_config[key] for key in
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}
+        self.resDF.toDF.write \
+            .format("jdbc") \
+            .option("url", config["url"]) \
+            .option("driver", config["driver"]) \
+            .option("dbtable", config["dbtable_streaming"]) \
+            .option("user", config["user"]) \
+            .option("password", config["password"]) \
+            .mode(config["mode_batch"]) \
+            .option("numPartitions", config["nums_partition"]) \
+            .save()
 
 
 

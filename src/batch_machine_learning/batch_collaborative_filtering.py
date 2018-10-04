@@ -108,31 +108,6 @@ class BatchMachineLearning:
                                         .drop(self.df_yelp_filter_business.business_id) \
                                         .select("business_id", "user_id", "ratings")
 
-
-
-        column_list = ["user_id"]
-        window = Window.partitionBy([col(x) for x in column_list]) \
-                        .orderBy(self.df_yelp_rating_sample['ratings'].desc())
-        self.df_yelp_rating_sample = self.df_yelp_rating_sample \
-                    .select("user_id", "business_id", "ratings") \
-                    .select("*", rank().over(window).alias('rank')) \
-                    .filter(col('rank') <= 5)
-        config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_cf", "nums_partition"]}
-        self.df_yelp_rating_sample.write \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config["dbtable_cf"]) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .mode(config["mode_batch"]) \
-            .option("numPartitions", config["nums_partition"]) \
-            .save()
-        print("success in creating user recommend")
-
-
-
         self.user_indexer = StringIndexer(inputCol="user_id", outputCol="user_id_indexed", handleInvalid='error')
         self.user_index = self.user_indexer \
                                 .fit(self.df_yelp_rating_sample.select("user_id")) \
@@ -190,17 +165,7 @@ class BatchMachineLearning:
         save batch processing results into PostgreSQL database and adds necessary index
         """
         config = {key: self.psql_config[key] for key in
-                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "dbtable_id", "nums_partition"]}
-        self.df_results.write \
-            .format("jdbc") \
-            .option("url", config["url"]) \
-            .option("driver", config["driver"]) \
-            .option("dbtable", config["dbtable_batch"]) \
-            .option("user", config["user"]) \
-            .option("password", config["password"]) \
-            .mode(config["mode_batch"]) \
-            .option("numPartitions", config["nums_partition"]) \
-            .save()
+                  ["url", "driver", "user", "password", "mode_batch", "dbtable_batch", "nums_partition"]}
 
         self.df_yelp_filter_user.select("user_id").write \
             .format("jdbc") \
