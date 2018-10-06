@@ -5,13 +5,7 @@ from flask import render_template
 from flask import request
 import psycopg2
 import pandas as pd
-
-
-# set default _id and the list of coordinates to display
-app.vid = [54, 147]
-app.res = []
-app.coords = []
-
+import math
 
 # read Google Maps API Key from file
 #with open("./config/GoogleAPIKey.config") as f:
@@ -33,12 +27,15 @@ def cesareans_output():
     dbname = 'mydatabase'
     conn = psycopg2.connect(database=dbname, user=user, password=password, host=host, port=port, connect_timeout=10)
     cursor = conn.cursor()
-    location_string = request.args.get('birth_month')
+    location_string = request.args.get('user_location')
+    location = [36.12, -115.28]
+    location_id = [45, 123]
     if location_string:
-        location_id = location_string.split(",")
-    else:
-        location_id = [54, 147]
-    query = "SELECT name, address, score FROM {} WHERE latitude_id={} and longitude_id={} ORDER BY score DESC".format(
+        s = location_string.split(",")
+        location = [float(s[0]), float(s[1])]
+        location_id[0] = int(math.floor((location[0] - 35.98) / 0.003))
+        location_id[1] = int(math.floor((location[1] + 115.65) / 0.003))
+    query = "SELECT name, address, score, latitude, longitude FROM {} WHERE latitude_id={} and longitude_id={} ORDER BY score DESC Limit 5".format(
         'Ranking', location_id[0], location_id[1])
     cursor.execute(query)
     data = cursor.fetchall()
@@ -48,6 +45,6 @@ def cesareans_output():
     conn.close()
     names = []
     for i in range(df.shape[0]):
-        names.append(dict(Restaurant=df.iloc[i, 0], Address=df.iloc[i, 1], Score=df.iloc[i, 2]))
-    return render_template('output.html', names=names)
+        names.append(dict(Restaurant=df.iloc[i, 0], Address=df.iloc[i, 1], Score=df.iloc[i, 2], Latitude=df.iloc[i, 3], Longitude=df.iloc[i, 4]))
+    return render_template('output.html', names=names, location=location)
 

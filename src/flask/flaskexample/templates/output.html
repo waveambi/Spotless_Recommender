@@ -35,20 +35,11 @@
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Spotless Restaurant Recommender</a>
+        <div  class="navbar-header">
+          <a class="navbar-brand" style="float: center; font-size: 48px;" href="#">Spotless Recommender</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -56,31 +47,50 @@
 <br><br>
      <div class="container">
     <div class="starter-template">
-        <h2>Type in your location</h2>
-        <p>Enter user's location with latitude and longitude</p>
+        <h2>A real-time clean food recommendation website </h2>
+        <p>Enter your location with latitude and longitude</p>
     </div>
 
     <div class = "container">
 
       <form  action="/output" method="GET">
         <div class="form-group">
-          <label for="birth_month">Location:</label>
-          <input type="text" id="birth_month" name='birth_month' placeholder="e.g.[54,147] ">
+          <label for="user_location">Location:</label>
+          <input type="text" id="user_location" name='user_location' placeholder="e.g.36.1,-115.21 ">
         </div>
         <div>
-          <button type="submit" class="btn btn-default btn-lg">Find these Cesareans!</button>
+          <button type="submit" class="btn btn-default btn-lg">Find food around you!</button>
         </div>
       </form>
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
 
+
+     </div> <!-- /.container-->
+
+    <div class="container">
+      <div class="starter-template">
+
+        <p class="lead"></p>
+      </div>
+
+      <table class="table table-hover">
+      <tr></tr>
+
+      <tr></tr>
+
+      </table>
+
+     </div>
+
+
   </div> <!-- /.container-->
 
     <div class="container">
       <div class="starter-template">
-        <h3>Results:</h3>
-        <p class="lead">Below is the result of your query.<br></p>
+        <h2>Results</h2>
+        <p class="lead"></p>
       </div>
 
       <table class="table table-hover">
@@ -92,9 +102,55 @@
 
      </div><!-- /.container -->
 
+
+        <div class="container">
+      <div class="starter-template">
+        <h2>Food Map</h2>
+        <p class="lead"></p>
+      </div>
+      <div id="googleMap" style="width:100%;height:400px;"></div>
+
+      <script>
+      function myMap() {
+      var mapProp= {
+          center:new google.maps.LatLng({{location[0]}},{{location[1]}}),
+          zoom:19,
+      };
+      var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+      }
+      </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrZigpzoRd7PuF6iMX0b-kYxUGK0gKoW4&callback=myMap"></script>
+         <div id="site_content">
+    <div id="map-container" style="padding-top: 0px;">
+      <div id="map-canvas"></div>
+    </div>
+    <div id="content">
+      <div class="content_item">
+        <footer style="padding-top: 30px;">
+          <span style="float: center; color:#FFF">
+            &nbsp&nbsp&nbsp&nbsp <a href="mailto:wave.songtao@gmail.com">Tao Song</a>
+          </span>
+          <span style="float: left">
+            <a href="https://docs.google.com/presentation/d/158nWR_iLMF0kdsUCLse_PPjg88_bjKj5SlNgOiZoiTY/edit#slide=id.g4327211fd2_1_0" target="_blank">Slideshare</a>       |
+            <a href="" target="_blank">Video</a>
+          </span>
+          <span style="float: right; color:#000">
+            <a href="https://github.com/waveambi">Github</a>     |
+            <a href="https://www.linkedin.com/in/tao-song/">LinkedIn</a>	&nbsp&nbsp&nbsp&nbsp
+          </span>
+        </footer>
+      </div>
+    </div>
+  </div>
+        </div><!-- /.container -->
+
+
+
+
+
     <div class="container">
       <div class="starter-template">
-        <h3>Thanks</h3>
         <p class="lead">Thanks</p>
       </div>
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
