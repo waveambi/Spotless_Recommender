@@ -8,10 +8,10 @@ from pyspark.sql.types import IntegerType, StringType
 from pyspark.sql.window import Window
 from pyspark.sql.functions import lit, rank, col
 #from pyspark.ml import Pipeline
-#from pyspark.ml.feature import StringIndexer
+from pyspark.ml.feature import StringIndexer
 #from pyspark.ml.recommendation import ALS
-#from pyspark.ml.evaluation import RegressionEvaluator
-#from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
+from pyspark.ml.evaluation import RegressionEvaluator
+from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 from pyspark.mllib.recommendation import ALS, MatrixFactorizationModel, Rating
 
 
