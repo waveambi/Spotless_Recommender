@@ -7,12 +7,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import IntegerType, StringType
 from pyspark.sql.window import Window
 from pyspark.sql.functions import lit, rank, col
-#from pyspark.ml import Pipeline
+from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
-#from pyspark.ml.recommendation import ALS
+from pyspark.ml.recommendation import ALS
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
-from pyspark.mllib.recommendation import ALS, MatrixFactorizationModel, Rating
 
 
 class BatchMachineLearning:
@@ -110,26 +109,26 @@ class BatchMachineLearning:
                                                 self.df_yelp_rating["business_id_indexed"].cast(IntegerType()))
         print("Num of Repartition is ", self.df_yelp_rating.rdd.getNumPartitions())
         #self.df_yelp_rating = self.df_yelp_rating.rdd.repartition(1000)
+        print("sample data")
+        print(self.df_yelp_rating.rdd.take(5))
 
     def spark_recommendation_prediction(self):
         """
         calculates restaurant recommendation and ranks with ALS Matrix Factorization
         """
         self.df_training, self.df_test = self.df_yelp_rating.randomSplit([0.8, 0.2])
-        self.df_training = self.df_training.rdd
-        self.df_test = self.df_test.rdd
         self.df_training.cache()
         self.df_test.cache()
-        rank = 10
-        numIterations = 5
-        model = ALS.train(self.df_training, rank, numIterations)
+        als = ALS(maxIter=5, regParam=0.01, userCol='user_id_indexed', itemCol='business_id_indexed', ratingCol='ratings', coldStartStrategy="drop")
+        model = als.fit(self.df_training)
 
-        # Evaluate the model on training data
-        testdata = self.df_test.map(lambda p: (p[0], p[1]))
-        predictions = model.predictAll(testdata).map(lambda r: ((r[0], r[1]), r[2]))
-        ratesAndPreds = self.df_test.map(lambda r: ((r[0], r[1]), r[2])).join(predictions)
-        MSE = ratesAndPreds.map(lambda r: (r[1][0] - r[1][1]) ** 2).mean()
-        print("Mean Squared Error = " + str(MSE))
+        # Evaluate the model by computing the RMSE on the test data
+        predictions = model.transform(self.df_test)
+        evaluator = RegressionEvaluator(metricName="rmse", labelCol="rating",
+                                        predictionCol="prediction")
+        rmse = evaluator.evaluate(predictions)
+        print("Root-mean-square error = " + str(rmse))
+
 
         #pipeline = Pipeline(stages=[als])
         #param = ParamGridBuilder() \
