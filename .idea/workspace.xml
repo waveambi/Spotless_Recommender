@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="" />
+    <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" afterPath="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,10 +23,20 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="spark-batch-machine-learning-run.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="31" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3135">
+            <state relative-caret-position="345">
               <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
               <folding />
             </state>
@@ -51,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/flask/run.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
-              <caret line="2" column="48" lean-forward="true" selection-start-line="2" selection-start-column="48" selection-end-line="2" selection-end-column="48" />
+              <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -118,7 +130,6 @@
         <option value="$PROJECT_DIR$/src/config/s3bucket.config" />
         <option value="$PROJECT_DIR$/src/spark-batch-run.sh" />
         <option value="$PROJECT_DIR$/src/spark-streaming-run.sh" />
-        <option value="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
         <option value="$PROJECT_DIR$/src/requests_simulator/requests_simulator.py" />
         <option value="$PROJECT_DIR$/src/streaming_simulator/requests_simulator.py" />
         <option value="$PROJECT_DIR$/src/airflow/batch_scheduler.py" />
@@ -140,6 +151,7 @@
         <option value="$PROJECT_DIR$/src/flask/flaskexample/views.py" />
         <option value="$PROJECT_DIR$/src/flask/flaskexample/templates/output.html" />
         <option value="$PROJECT_DIR$/src/flask/run.py" />
+        <option value="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
       </list>
     </option>
   </component>
@@ -604,13 +616,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="30" lean-forward="false" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/airflow/schedule.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -756,14 +761,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3135">
-          <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -772,18 +769,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/templates/output.html">
+    <entry file="file://$PROJECT_DIR$/src/flask/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="14" column="25" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="38" column="9" lean-forward="true" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
+        <state relative-caret-position="30">
+          <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -796,10 +785,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/flask/run.py">
+    <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/templates/output.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="48" lean-forward="true" selection-start-line="2" selection-start-column="48" selection-end-line="2" selection-end-column="48" />
+        <state relative-caret-position="205">
+          <caret line="14" column="25" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="38" column="9" lean-forward="true" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="31" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
           <folding />
         </state>
       </provider>
