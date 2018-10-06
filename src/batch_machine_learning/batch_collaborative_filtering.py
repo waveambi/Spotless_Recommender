@@ -108,7 +108,7 @@ class BatchMachineLearning:
                                                 self.df_yelp_rating["user_id_indexed"].cast(IntegerType())) \
                                         .withColumn("business_id_indexed",
                                                 self.df_yelp_rating["business_id_indexed"].cast(IntegerType()))
-        print("Num of Repartition is "self.df_yelp_rating.rdd.getNumPartitions())
+        print("Num of Repartition is ", self.df_yelp_rating.rdd.getNumPartitions())
         self.df_yelp_rating = self.df_yelp_rating.rdd.repartition(480).toDF()
 
     def spark_recommendation_prediction(self):
