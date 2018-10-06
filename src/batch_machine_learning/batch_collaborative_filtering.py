@@ -88,7 +88,7 @@ class BatchMachineLearning:
                                         .agg({"business_id": "count"}) \
                                         .withColumnRenamed("count(business_id)", "ratings_count")
         self.df_yelp_filter_user = self.df_yelp_filter_user \
-                                        .filter(self.df_yelp_filter_user.ratings_count >= 5)
+                                        .filter(self.df_yelp_filter_user.ratings_count >= 1)
         print("total number of users with more than 5 records is ", self.df_yelp_filter_user.count())
 
         self.df_yelp_filter_business = self.df_yelp_rating \

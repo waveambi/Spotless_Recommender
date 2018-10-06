@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" afterPath="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" afterPath="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,7 +23,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spark-batch-machine-learning-run.sh" pinned="false" current-in-tab="true">
+      <file leaf-file-name="spark-batch-machine-learning-run.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
@@ -38,6 +38,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
               <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="batch_collaborative_filtering.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="90" column="91" lean-forward="false" selection-start-line="90" selection-start-column="91" selection-end-line="90" selection-end-column="91" />
               <folding />
             </state>
           </provider>
@@ -141,7 +151,6 @@
         <option value="$PROJECT_DIR$/src/flask/__init__.py" />
         <option value="$PROJECT_DIR$/src/flask/flaskexample/__init__.py" />
         <option value="$PROJECT_DIR$/src/batch_processing/batch_processing.py" />
-        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
         <option value="$PROJECT_DIR$/src/kafka-run.sh" />
         <option value="$PROJECT_DIR$/src/config/kafka.config" />
         <option value="$PROJECT_DIR$/src/streaming/streamer.py" />
@@ -152,6 +161,7 @@
         <option value="$PROJECT_DIR$/src/flask/flaskexample/templates/output.html" />
         <option value="$PROJECT_DIR$/src/flask/run.py" />
         <option value="$PROJECT_DIR$/src/spark-batch-machine-learning-run.sh" />
+        <option value="$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py" />
       </list>
     </option>
   </component>
@@ -673,14 +683,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2505">
-          <caret line="167" column="85" lean-forward="false" selection-start-line="167" selection-start-column="85" selection-end-line="167" selection-end-column="85" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/config/s3bucket.config">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -793,14 +795,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/flask/flaskexample/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -813,6 +807,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="9" column="33" lean-forward="false" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helpers/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="212" column="7" lean-forward="false" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/batch_machine_learning/batch_collaborative_filtering.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="90" column="91" lean-forward="false" selection-start-line="90" selection-start-column="91" selection-end-line="90" selection-end-column="91" />
           <folding />
         </state>
       </provider>
