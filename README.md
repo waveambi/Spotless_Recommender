@@ -19,7 +19,7 @@ Pipeline
 
 -----------------
 
-![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/src/docs/Pipeline.jpg "Recommender Pipeline")
+![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/src/docs/Pipeline.png "Recommender Pipeline")
 
 ***Batch Job***: download yelp ratings and reviews from Kaggle and sanitary inspections data from OpenData. Those are ingested from S3 bucket into Spark, which computes top-n nearby recommendation within every district of the grid, and results are writed into the AWS RDS Postgresql database.
 > This process is scheduled and automated with Airflow.
