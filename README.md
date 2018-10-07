@@ -9,9 +9,9 @@ This project is for clean food recommendation with Yelp ratings, reviews sentime
 
 Simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendation.*
 
-![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/src/docs/map.png "Food Map")
-
 > *Users could receive top 5 best recommendation based on their food preference and dining history among the city.
+
+![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/src/docs/map.png "Food Map")
 
 Nearby restaurant are defined as walking distance within 2 minutes and map are segmentated into 200m x 200m chunks of city street.
 
@@ -84,4 +84,5 @@ If the topic does not exist, run `./kafka-run --create`. To describe existing to
 It is also possible to delete inactive topic using the option `--delete`, or view the messages in the topic with the option `--console-consume`.
 
 ### Flask
-Pending
+Execute `./run.py` within flask folder on the master of *flask-node*, use http://spotlessrecommender.site to redirect to flask EC2 instance.
+The default port number is 5000.

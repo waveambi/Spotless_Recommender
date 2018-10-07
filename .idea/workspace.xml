@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28ca0953-dd79-4a1c-b2f4-37f695a35fc2" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/docs/map.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/docs/pegasus_setup.odt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/docs/airflow_install.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +19,8 @@
       <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+            <state relative-caret-position="562">
+              <caret line="87" column="32" lean-forward="false" selection-start-line="87" selection-start-column="32" selection-end-line="87" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -696,8 +698,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="562">
+          <caret line="87" column="32" lean-forward="false" selection-start-line="87" selection-start-column="32" selection-end-line="87" selection-end-column="32" />
           <folding />
         </state>
       </provider>
