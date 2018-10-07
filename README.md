@@ -1,7 +1,7 @@
-# Spotless Restaurant Recommender
-> ***Real-Time Nearby Sanitary Food Recommendation***
+# Spotless Recommender
+> ***Real-Time Nearby Food Recommendation***
 
-This is a project I completed during the Insight Data Engineering program (New York, Fall 2018).
+This is a project I completed during the Insight Data Engineering program (New York, Fall 2018). Visit [spotlessrecommender.site](http://spotlessrecommender.site) to see it in action (or watch it [here](https://www.youtube.com/watch?v=pI_qaubQ47Q)).
 
 ***
 
