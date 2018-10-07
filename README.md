@@ -9,7 +9,9 @@ This project is for clean food recommendation with Yelp ratings, reviews sentime
 
 Simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendation.*
 
-> *Users could also receive top 5 best recommendation based on their food preference and dining history among the city.
+![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/src/docs/map.png "Food Map")
+
+> *Users could receive top 5 best recommendation based on their food preference and dining history among the city.
 
 Nearby restaurant are defined as walking distance within 2 minutes and map are segmentated into 200m x 200m chunks of city street.
 
