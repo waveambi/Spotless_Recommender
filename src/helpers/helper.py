@@ -138,7 +138,6 @@ def format_name(name):
         s = re.sub(r"\splazzo", "", s)
         s = re.sub(r"\sinc", "", s)
         s = re.sub(r"\sthe", "", s)
-        #s = re.sub(r" ", "", s)
         return s.strip()
 
 

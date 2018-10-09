@@ -119,14 +119,10 @@ class Streamer(SparkStreamerFromKafka):
             iPass = 1
 
         print("========= RDD Batch Number: {0} - {1} =========".format(iPass, str(time)))
-        # rdd key = (latitude_id, logitude_id)
-        # rdd value = (vehicle_id, longitude, latitude, datetime)
-        # join the batch dataset with rdd_bcast, filter None values,
-        # from all nearby restaurant suggestions select high scores
+        # join the batch dataset with rdd_bcast, filter None values, from all nearby restaurants select high scores
         self.resDF = rdd.join(self.df_ranking_result)
         if self.resDF.isEmpty():
             return
-        #self.resRDD = self.resDF.flatMap(lambda x: (x[0][0], x[0][1], x[1][0][0], x[1][0][1], x[1][0][2], x[1][1][0], x[1][1][1], x[1][1][2], x[1][1][3]))
         print(self.resDF.take(5))
         config = {key: self.psql_config[key] for key in
                   ["url", "driver", "user", "password", "mode_batch", "dbtable_streaming", "nums_partition"]}

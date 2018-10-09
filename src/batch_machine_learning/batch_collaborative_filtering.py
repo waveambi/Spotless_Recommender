@@ -130,16 +130,6 @@ class BatchMachineLearning:
         print("Root-mean-square error = " + str(rmse))
 
 
-        #pipeline = Pipeline(stages=[als])
-        #param = ParamGridBuilder() \
-        #    .addGrid(als.rank, [5, 10]) \
-        #    .build()
-        #crossval = CrossValidator(estimator=pipeline,
-        #                          estimatorParamMaps=param,
-        #                          evaluator=RegressionEvaluator(metricName='rmse', labelCol='rating'),
-        #                          numFolds=2)
-
-
     def save_to_postgresql(self):
         """
         save batch processing results into PostgreSQL database and adds necessary index
@@ -157,6 +147,7 @@ class BatchMachineLearning:
             .mode(config["mode_batch"]) \
             .option("numPartitions", config["nums_partition"]) \
             .save()
+
 
     def run(self):
         """
