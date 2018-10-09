@@ -13,7 +13,7 @@ Getting nearby food with app is quite popular nowadays and how to make recommend
 you can never image what happened in kitchen. The situation is even worse in NYC, as many kitchen locates on basement and utilities are really old. In this scenario, how to make cleaner and better recommendation for customer would be essential but also challenging. How to integrate data from distinct
 sources, how to utilize machine learning to improve quality of recommendation and how to send back results within seconds as no one want to wait too long for recommendation, this project is working on solve these issues.
 
-##Tools and Technologies:
+## Tools and Technologies:
 
   1. SparkMLlib, SparkSQL, Streaming
 
@@ -25,12 +25,12 @@ sources, how to utilize machine learning to improve quality of recommendation an
 
   5. Airflow
 
-> * Restaurant scores are calculated with Yelp ratings, reviews sentiments and sanitary inspection results, simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendations. Nearby restaurant are defined as walking distance
- within 2 minutes and map are segmentated into 200m x 200m chunks of city street.*
-
 -----------------
 
 ![alt text](https://github.com/waveambi/Insight_Recommendation/raw/master/docs/map.png "Food Map")
+
+> * Restaurant scores are calculated with Yelp ratings, reviews sentiments and sanitary inspection results, simulated user requests are generated with real-time location to **Recommender**, and they would receive top 5 nearby restaurant recommendations. Nearby restaurant are defined as walking distance
+ within 2 minutes and map are segmentated into 200m x 200m chunks of city street.*
 
 ## Pipeline:
 
@@ -59,7 +59,7 @@ AWS Tip: Add your local IP to your AWS VPC inbound rules
 
 Pegasus Tip: follow the notes in docs/pegasus_setup.odt to configure Pegasus
 
-### CLUSTER STRUCTURE:
+#### CLUSTER STRUCTURE:
 
 To reproduce my environment, 11 m4.large AWS EC2 instances are needed:
 
@@ -72,33 +72,33 @@ To create the clusters, put the appropriate `master.yml` and `workers.yml` files
 
 After that, **Recommender** need to be cloned to the clusters (with necessary .jar files downloaded and required Python packages installed), and any node's address from cluster *some-cluster-name* will be saved as the environment variable SOME_CLUSTER_NAME_$i on every master, where $i = 0, 1, 2, ...
 
-### Airflow setup
+#### Airflow setup
 
 The Apache Airflow scheduler can be installed on the master node of *spark-cluster*. Follow the instructions to launch the Airflow server.
 
 
-### PostgreSQL setup
+#### PostgreSQL setup
 The PostgreSQL database sits on AWS RDS *Postgresql* instance.
 
-### Configurations
+#### Configurations
 Configuration settings for Kafka, Streaming, PostgreSQL, AWS S3 bucket for the data are stored in the respective files in `config/` folder.
 
 Replace the settings in `config/s3bucket.config.` with the names and paths for your S3 bucket.
 
 ## Running Recommender
 
-### Schedule the Batch Job
+#### Schedule the Batch Job
 Running `airflow/schedule.sh` on the master of *spark-cluster* will add the batch job to the scheduler. The batch job is set to execute every 24 hours, and it can be started and monitored from the Airflow GUI at `http://$SPARK_CLUSTER_0:8081`.
 Also batch job could be running manualy with `spark-batch-run.sh` and `spark-batch-machine-learning.sh` with this respirotary.
 
-### Start the Streaming Job
+#### Start the Streaming Job
 Execute `./spark-streaming-run.sh` on the master of *spark-cluster* (preferably after batch job).
 
-### Start streaming messages with Kafka
+#### Start streaming messages with Kafka
 Execute `./kafka-run --produce` on the master of *kafka-cluster* to start simulating real-time user requests.
 If the topic does not exist, run `./kafka-run --create`. To describe existing topic, run `./kafka-run --describe`.
 It is also possible to delete inactive topic using the option `--delete`, or view the messages in the topic with the option `--console-consume`.
 
-### Flask
+#### Flask
 Execute `./run.py` within flask folder on the master of *flask-node*, use http://spotlessrecommender.site to redirect to flask EC2 instance.
 The default port number is 5000.
