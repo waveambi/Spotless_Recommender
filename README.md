@@ -3,9 +3,7 @@
 
 ## Introduction
 
-This is a project I completed during the Insight Data Engineering program (New York, Fall 2018). This project aims building data pipeline for integrating data from Yelp open review dataset and sanitary inspections dataset from government. This project consists of four main components: batch processing part for
-integrating and transforming data from different sources, machine learning part for collaborative filtering with user's rating and dining history data, real-time streaming part for handling requests from simulated users with locations, and finally visualization part of website. Raw data would be processed and
-saved into database, then loaded into memory for real-time recommendation. Visit [spotlessrecommender](http://spotlessrecommender.site) to see it in action (or watch it [here](https://www.youtube.com/watch?v=pI_qaubQ47Q)).
+This is a project I completed during Insight Data Engineering program (New York, Fall 2018). This project aims building data pipeline for leveraging data from Yelp open dataset and sanitary inspections dataset for clean restaurant recommendation. This project consists of four main components: batch processing part for integrating and transforming data from different sources, machine learning part for collaborative filtering with user's historical ratings, real-time streaming part for handling requests from simulated users, and visualization part of website. Raw data would be processed during batech processing jobs, and results are saved into database, then loaded into memory for real-time recommendation. Visit [spotlessrecommender](http://spotlessrecommender.site) to see it in action (or watch it [here](https://www.youtube.com/watch?v=pI_qaubQ47Q)).
 
 ## Problem:
 
